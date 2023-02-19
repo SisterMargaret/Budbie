@@ -10,6 +10,8 @@ from django.core.exceptions import PermissionDenied
 from vendor.forms import VendorForm
 from django.utils.http import urlsafe_base64_decode
 
+from vendor.models import Vendor
+
 # Restrict the vendor from accessing the customer dashboard
 def check_role_vendor(user):
     if user.role == 1:
@@ -161,7 +163,11 @@ def customerDashboard(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def vendorDashboard(request):
-    return render(request, 'accounts/vendorDashboard.html')
+    vendor = Vendor.objects.get(user=request.user)
+    context = {
+        'vendor' : vendor
+    }
+    return render(request, 'accounts/vendorDashboard.html', context)
 
 @login_required(login_url='login')
 def myAccount(request):

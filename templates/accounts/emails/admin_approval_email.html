@@ -1,0 +1,10 @@
+{% autoescape off %}
+Hi {{user.first_name}},
+{% if is_approved %}
+    Congratulations! your restaurant has been approved.
+    - HungryBuff Team
+{%else%}
+    We are sorry! your restaurant is not eligible to use our platform. Please contact HungryBuff support team at help@hungrybuff.co
+{% endif %}
+
+{% endautoescape%}
