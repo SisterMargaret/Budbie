@@ -31,7 +31,13 @@
                                                                 <li class="gal-img">
                                                                     <div class="drag-list">
                                                                         <div class="item-thumb">
-                                                                            <img class="thumbnail" src="{{profile.profile_picture.url}}" alt="logo">
+                                                                            {% if profile.profile_picture %}
+                                                                            <img class="thumbnail" 
+                                                                                   src="{{profile.profile_picture.url}}" alt="logo">
+                                                                            {%else%} 
+                                                                            <img class="thumbnail" 
+                                                                                   src="{%static 'images/default-profile.png'%}" alt="logo">    
+                                                                            {%endif%}
                                                                         </div>
                                                                     </div>
                                                                     
@@ -42,6 +48,11 @@
                                                             <label>Update Logo</label>
                                                             <div class="upload-gallery">
                                                                 {{profileForm.profile_picture}}
+                                                                {% comment %} {% if profileForm.profil_picture %}
+                                                                    <img class="thumbnail" src="{{profileForm.profile_picture.url}}" />
+                                                                {%else%} 
+                                                                    <img class="thumbnail" src="{%static 'images/default-profile.png'%}" width=50 />
+                                                                {%endif%} {% endcomment %}
                                                             </div>
                                                         </div>
                                                         <label class="text-danger">{{profileForm.profile_picture.errors}}</label>
@@ -54,7 +65,15 @@
                                                                 <li class="gal-img">
                                                                     <div class="drag-list">
                                                                         <div class="item-thumb">
-                                                                            <img class="thumbnail" src="{{vendor.user_profile.cover_picture.url}}" alt="">
+                                                                            {% if vendor.user_profile.cover_picture %}
+                                                                            <img class="thumbnail" 
+                                                                            src="{{vendor.user_profile.cover_picture.url}}" alt="">
+                                                                            {%else%} 
+                                                                            <img class="thumbnail" 
+                                                                            src="{%static 'images/default-cover.png'%}"
+                                                                             alt="default cover picture">
+                                                                             
+                                                                            {%endif%}
                                                                         </div>
                                                                     </div>
                                                                 </li>

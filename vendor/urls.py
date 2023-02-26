@@ -11,5 +11,10 @@ urlpatterns = [
     #Category CRUD
     path('menu-builder/category/add/', views.addCategory, name='addCategory'),
     path('menu-builder/category/edit/<int:pk>/', views.editCategory, name='editCategory'),
-    path('menu-builder/category/delete/<int:pk>/', views.deleteCategory, name='deleteCategory')
+    path('menu-builder/category/delete/<int:pk>/', views.deleteCategory, name='deleteCategory'),
+    
+    #FoodItem CRUD
+    path('menu-builder/food/add/', views.addFoodItem, name='addFoodItem'),
+    path('menu-builder/food/edit/<int:pk>/', views.editFoodItem, name='editFoodItem'),
+    path('menu-builder/food/delete/<int:pk>/', views.deleteFoodItem, name='deleteFoodItem')
 ]
