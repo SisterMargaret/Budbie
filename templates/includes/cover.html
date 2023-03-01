@@ -20,10 +20,12 @@
 
                         <div class="text-holder">
                             <span class="restaurant-title">{{vendor.vendor_name}}</span>
-                            <div class="text">
-                                <i class="icon-location"></i>
-                                <p>{{vendor.user_profile.address}}</p>
-                            </div>
+                            {%if vendor.user_profile.address %} 
+                                <div class="text">
+                                    <i class="icon-location"></i>
+                                    <p>{{vendor.user_profile.address}}</p>
+                                </div>
+                            {%endif%}
                         </div>
                     </div>
                 </div>

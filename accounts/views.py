@@ -9,7 +9,7 @@ from accounts.utils import detectUser, send_verification_email
 from django.core.exceptions import PermissionDenied
 from vendor.forms import VendorForm
 from django.utils.http import urlsafe_base64_decode
-
+from django.template.defaultfilters import slugify
 from vendor.models import Vendor
 
 # Restrict the vendor from accessing the customer dashboard
@@ -68,7 +68,7 @@ def registerUser(request):
 def registerVendor(request):
     if request.user.is_authenticated:
         messages.warning(request, 'You are already logged in')
-        return redirect('dashboard')
+        return redirect('myAccount')
     if request.method == 'POST':
         form = UserForm(request.POST)
         vendor_form = VendorForm(request.POST, request.FILES)
@@ -88,6 +88,7 @@ def registerVendor(request):
             user.save()
             vendor = vendor_form.save(commit=False)
             vendor.user = user
+            vendor.slug = slugify(vendor_form.cleaned_data['vendor_name'])+'-'+str(user.id)
             user_profile = UserProfile.objects.get(user=user)
             vendor.user_profile = user_profile
             vendor.save()
@@ -131,7 +132,7 @@ def activate(request, uidb64, token):
 def login(request):
     if request.user.is_authenticated:
         messages.warning(request, 'You are already logged in')
-        return redirect('dashboard')
+        return redirect('myAccount')
         
     if request.method == 'POST':
         email = request.POST['email']
