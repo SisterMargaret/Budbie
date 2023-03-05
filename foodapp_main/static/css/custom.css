@@ -19,3 +19,7 @@
     font-size: 12px;
     cursor: pointer;
 } 
+
+.location-field-text filter{
+    color:black !important;
+}

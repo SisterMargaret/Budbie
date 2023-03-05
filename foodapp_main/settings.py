@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'vendor',
     'menu',
     'marketplace',
+    'django.contrib.gis'
 ]
 
 MIDDLEWARE = [
@@ -84,7 +86,8 @@ WSGI_APPLICATION = 'foodapp_main.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        #'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE' : 'django.contrib.gis.db.backends.postgis',
         'NAME': config('DBNAME'),
         'USER': config('DBUSER'),
         'PASSWORD': config('DBPASSWORD'),
@@ -156,3 +159,7 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'HungryBuff Team'
 
 GOOGLE_API_KEY = 'AIzaSyD76mTxOlw1ZyW-1aFoAx296dl9ubF4w6o'
+
+os.environ['PATH'] = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
+os.environ['PROJ_LIB'] = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
+GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\gdal304.dll')
