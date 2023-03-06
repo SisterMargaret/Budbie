@@ -157,8 +157,6 @@ def search(request):
                                         user_profile__location__distance_lte=(pnt, D(mi=radius))
                                         ).annotate(distance=Distance("user_profile__location", pnt)).order_by("distance")
         
-        print(vendors)
-        
         for v in vendors:
             v.mls = round(v.distance.mi,1)
         
