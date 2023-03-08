@@ -200,4 +200,61 @@ $(document).ready(function(){
             $('#grandtotal').html(grand_total);
         }
     }
+
+ //opening_hours.html
+ $('.add_hour').on('click', function(e){
+        e.preventDefault();
+        
+        var day = document.getElementById('id_day').value;
+        var from_hour = document.getElementById('id_from_hour').value;
+        var to_hour = document.getElementById('id_to_hour').value;
+        var is_closed = document.getElementById('id_is_closed').checked;
+        var csrf_token = $('input[name=csrfmiddlewaretoken]').val();
+        var addOpeningHourUrl = $('#addOpeningHourUrl').val();
+        
+        if ((is_closed && day != '') || 
+            (day != '' && from_hour != '' && to_hour != ''))
+            $.ajax({
+                type: 'POST',
+                url: addOpeningHourUrl,
+                data : { "day" : day, "from_hour" : from_hour, "to_hour" : to_hour, "is_closed" : is_closed, "csrfmiddlewaretoken" : csrf_token},
+                success: function(result){
+                    console.log(result);
+                    if (result.status == 'Success'){
+                        if (result.is_closed != 'Closed'){
+                            html = '<tr id=\''+ result.id +'\'><td><b>'+ result.day+'</b></td><td>'+result.from_hour+' - '+ result.to_hour +'</td><td><a class=\'btn btn-danger deleteOpeningHours\' href="{% url \'deleteOpeningHours\' '+ result.id +' %}">Remove</a></td></tr>'
+                        }
+                        else{
+                            html = '<tr id=\''+ result.id +'\'><td><b>'+ result.day+'</b></td><td>'+ result.is_closed +'</td><td><a class=\'btn btn-danger deleteOpeningHours\' href="{% url \'deleteOpeningHours\' '+ result.id+' %}">Remove</a></td></tr>'
+                        }
+                        $('.opening_hours').append(html);
+                        document.getElementById("opening_hours").reset();
+                    }
+                    else{
+
+                        swal(result.message, '', 'error');
+                    }
+                }
+
+            });
+        else
+            swal('Please fill all the details','','info');
+
+    });   
+
+    $('.deleteOpeningHours').on('click', function(e){
+        e.preventDefault();
+
+        var url = $('#'+ e.target.id).attr('data-url');
+
+        $.ajax({
+            url : url,
+            type : 'GET',
+            success : function(response){
+                if (response.status == 'Success')
+                    $('#row-'+ e.target.id).remove();
+            }
+        })
+    });
+//document ready close
 });
