@@ -28,7 +28,6 @@ def vendorDetail(request, slug):
         Prefetch('fooditems',
                  queryset= FoodItem.objects.filter(is_available = True)
                 )
-        
     )
     
     if request.user.is_authenticated:
@@ -52,28 +51,26 @@ def vendorDetail(request, slug):
 def addToCart(request, foodItemId):
     if request.user.is_authenticated:
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            foodItem = FoodItem.objects.get(id=foodItemId)
+            
             try:
-                foodItem = FoodItem.objects.get(id=foodItemId)
-                try:
-                    
-                    checkCart = Cart.objects.get(user=request.user, foodItem=foodItem)
-                    checkCart.quantity += 1
-                    checkCart.save()
-                    return JsonResponse({"status" : "Success", 
-                                         "message": "Cart successfully incremented",
-                                         "cart_counter" : get_cart_counter(request),
-                                         'qty' : checkCart.quantity,
-                                         "cart_amount": get_cart_amount(request)})
-                except:
-                    checkCart = Cart.objects.create(user=request.user, foodItem=foodItem, quantity=1)
-                    
-                    return JsonResponse({"status" : "Success", 
-                                         "message": "Food Item added to the cart", 
-                                         "cart_counter" :get_cart_counter(request), 
-                                         "qty" : checkCart.quantity, 
-                                         "cart_amount": get_cart_amount(request)})
+                checkCart = Cart.objects.get(user=request.user, foodItem=foodItem)
+                checkCart.quantity += 1
+                checkCart.save()
+                return JsonResponse({"status" : "Success", 
+                                        "message": "Cart successfully incremented",
+                                        "cart_counter" : get_cart_counter(request),
+                                        'qty' : checkCart.quantity,
+                                        "cart_amount": get_cart_amount(request)})
             except:
-                 return JsonResponse({"status" : "Failed", "message": "Food Item not available"})
+                checkCart = Cart.objects.create(user=request.user, foodItem=foodItem, quantity=1)
+                
+                return JsonResponse({"status" : "Success", 
+                                        "message": "Food Item added to the cart", 
+                                        "cart_counter" :get_cart_counter(request), 
+                                        "qty" : checkCart.quantity, 
+                                        "cart_amount": get_cart_amount(request)})
+            
         else:
             return JsonResponse({'status': 'Failed', 'message':'Invalid Request'})
     else:
