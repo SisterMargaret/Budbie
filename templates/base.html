@@ -33,6 +33,14 @@
 	{%endif%}
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	
+	{%if '/checkout/' in request.path %}
+	<link rel="stylesheet" href="{% static 'css/apple-pay.css'%}"/>
+	<script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
+	{%endif%}
+
+    <!-- Include the PayPal JavaScript SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id={{PAYPAL_CLIENT_ID}}&currency=GBP"></script>
+
 	<style>
 		body, .main-section p, .mce-content-body p{
 			font:Normal  14px/24px "Open Sans", sans-serif;letter-spacing: 0px;text-transform: none;color: #515151 !important;

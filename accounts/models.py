@@ -84,6 +84,7 @@ class UserProfile(models.Model):
     cover_picture = models.ImageField(upload_to="users/cover_pictures", blank=True, null=True)
     address = models.CharField(blank=True, null=True, max_length=250)
     city = models.CharField(blank=True, null=True, max_length=50)
+    state = models.CharField(blank=True, null=True, max_length=50)
     country =  models.CharField(blank=True, null=True, max_length=50)
     postcode = models.CharField(blank=True, null=True, max_length=10)
     latitude = models.CharField(blank=True, null=True, max_length=20)
