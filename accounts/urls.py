@@ -20,4 +20,6 @@ urlpatterns = [
     
     path('vendor/', include('vendor.urls')),
     path('customer/', include('customer.urls')),
+    
+    
 ]

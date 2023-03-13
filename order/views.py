@@ -161,5 +161,3 @@ def orderComplete(request):
         return render(request, 'order/orderComplete.html', context)
     except:
         return redirect('home')
-    
-    

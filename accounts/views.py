@@ -7,6 +7,7 @@ from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 from accounts.utils import detectUser, send_verification_email
 from django.core.exceptions import PermissionDenied
+from order.models import Order
 from vendor.forms import VendorForm
 from django.utils.http import urlsafe_base64_decode
 from django.template.defaultfilters import slugify
@@ -159,7 +160,13 @@ def logout(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_customer)
 def customerDashboard(request):
-    return render(request, 'accounts/customerDashboard.html')
+    orders = Order.objects.filter(user=request.user).order_by("-created_at")[:5]
+    orders_count = Order.objects.filter(user=request.user).count()
+    context = {
+        'orders' : orders,
+        'order_count' : orders_count
+    }
+    return render(request, 'accounts/customerDashboard.html', context)
 
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
@@ -230,3 +237,4 @@ def resetPasswordValidate(request, uidb64, token):
     else:
         messages.error(request, 'Invalid link')
         return redirect('myAccount')
+    

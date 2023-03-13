@@ -1,8 +1,10 @@
+import simplejson as json
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from accounts.forms import UserInfoForm, UserProfileForm
 from accounts.models import User, UserProfile
+from order.models import Order, OrderedFood
 
 @login_required(login_url='login' )
 def customerProfile(request):
@@ -30,3 +32,34 @@ def customerProfile(request):
         
     } 
     return render(request, 'customer/customerProfile.html', context)
+
+def myOrders(request):
+    orders  = Order.objects.filter(user=request.user).order_by('-created_at')
+    context = {
+        'orders': orders
+    }
+    
+    return render(request, 'customer/my_orders.html', context)
+
+def orderDetails(request, order_number):
+    try:
+        order = Order.objects.get(order_number = order_number, is_ordered=True)
+        orderedFood = OrderedFood.objects.filter(order=order)
+    
+        subtotal = 0
+        for item in orderedFood:
+            subtotal += (item.price* item.quantity)
+            
+        tax_data = json.loads( order.tax_data)
+        
+        context = {
+            'order' : order,
+            'orderedFood': orderedFood,
+            'subtotal' : subtotal,
+            'tax_data' : tax_data
+        }
+        return render(request, 'customer/order_details.html', context)
+    except:
+        return redirect('customer')
+    
+    
