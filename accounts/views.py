@@ -1,3 +1,4 @@
+import datetime
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.tokens import default_token_generator
@@ -172,8 +173,27 @@ def customerDashboard(request):
 @user_passes_test(check_role_vendor)
 def vendorDashboard(request):
     vendor = Vendor.objects.get(user=request.user)
+    orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by('-created_at')
+    orders_count = orders.count()
+    
+    #total_revenue
+    total_revenue = 0
+    for i in orders:
+        total_revenue += i.get_total_by_vendor()['grand_total']
+    
+    #Revenue this month
+    current_month_revenue = 0
+    current_month = datetime.datetime.now().month
+    current_month_orders = orders.filter(vendors__in=[vendor.id], created_at__month = current_month)
+    for i in current_month_orders:
+        current_month_revenue += i.get_total_by_vendor()['grand_total']
+    
     context = {
-        'vendor' : vendor
+        'vendor' : vendor,
+        'orders_count' : orders_count,
+        'orders' : orders[:10],
+        'total_revenue' : total_revenue,
+        'current_month_revenue' : current_month_revenue,
     }
     return render(request, 'accounts/vendorDashboard.html', context)
 

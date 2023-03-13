@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'order.request_object.RequestObjectMiddleware', #custom middleware created to access the request object in models.py
 ]
 
 ROOT_URLCONF = 'foodapp_main.urls'
@@ -77,6 +78,7 @@ TEMPLATES = [
                 'accounts.context_processors.get_paypal_clientid',
                 'marketplace.context_processors.get_cart_counter',
                 'marketplace.context_processors.get_cart_amount',
+                
             ],
         },
     },

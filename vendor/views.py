@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from accounts.views import check_role_vendor
 from menu.forms import CategoryForm, FoodItemForm
 from menu.models import Category, FoodItem
+from order.models import Order, OrderedFood
 from vendor.forms import OpeningHoursForm, VendorForm
 from vendor.models import OpeningHour, Vendor
 from vendor.utils import get_vendor
@@ -241,3 +242,27 @@ def deleteOpeningHours(request, pk):
             messages.success(request, 'Opening hours have been deleted')
     
     return JsonResponse({'status' : 'Success', 'message':'Please login to continue'})
+
+def orderDetail(request, order_number):
+    try:
+        order = Order.objects.get(order_number=order_number, is_ordered=True)
+        orderedFood = OrderedFood.objects.filter(order=order, foodItem__vendor=get_vendor(request))
+        context = {
+            'order' : order,
+            'orderedFood' : orderedFood,
+            'subtotal' : order.get_total_by_vendor()['subtotal'],
+            'tax_data' : order.get_total_by_vendor()['tax_dictionary'],
+            'grand_total' : order.get_total_by_vendor()['grand_total'],
+        }
+        return render(request, 'vendor/order_details.html', context)
+    except:
+        return redirect('vendor')
+    
+    
+def myOrders(request):
+    vendor = Vendor.objects.get(user=request.user)
+    orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by('-created_at')
+    context = {
+        'orders' : orders,
+    }
+    return render(request, 'vendor/my_orders.html', context)

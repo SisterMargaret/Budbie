@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from accounts.utils import send_notification_email
 from marketplace.context_processors import get_cart_amount
-from marketplace.models import Cart 
+from marketplace.models import Cart, Tax 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from order.forms import OrderForm
@@ -19,17 +19,47 @@ def placeOrder(request):
     if cart_count <= 0:
         return redirect('marketplace')
  
+    vendor_ids = []
+    for i in cart_items:
+        if i.foodItem.vendor.id not in vendor_ids:
+            vendor_ids.append(i.foodItem.vendor.id)
+ 
+    
+    get_tax = Tax.objects.filter(is_active=True)
+    k = {}
+    subtotal = 0
+    tax_dictionary = {}
+    total_data={}
+    for i in cart_items:
+        vendorId = i.foodItem.vendor.id
+        if vendorId in k:
+            subtotal = k[vendorId]
+            subtotal += (i.foodItem.price * i.quantity)
+            k[vendorId] = subtotal
+        else:
+            subtotal += (i.foodItem.price * i.quantity)
+            k[vendorId] = subtotal
+    
+        tax_dictionary = {}
+        for i in get_tax:
+            tax_type = i.type
+            tax_percentange = i.percentage
+            tax_amount = round((tax_percentange * subtotal)/100, 2)
+            tax_dictionary.update({ tax_type: {str(tax_percentange) : str(tax_amount)}})
+        
+        #Contruct total data
+        total_data.update({vendorId : {str(subtotal) : str(tax_dictionary)}})
+     
     dicCart = get_cart_amount(request)
     subtotal = dicCart['subtotal']   
     totalTax = dicCart['tax']
     grandTotal = dicCart['grand_total']   
     tax_data = dicCart['tax_dictionary']
-    print(request.method )
+    
     if request.method == 'POST':
         form = OrderForm(request.POST)
         
         if form.is_valid():
-            print(form.is_valid)
             order = Order()
             order.first_name = form.cleaned_data['first_name']
             order.last_name = form.cleaned_data['last_name']
@@ -43,10 +73,13 @@ def placeOrder(request):
             order.user = request.user
             order.total = grandTotal
             order.tax_data = json.dumps(tax_data)
+            order.total_data = json.dumps(total_data)
             order.total_tax = totalTax
             order.payment_method = request.POST['payment_method']
+            
             order.save()
             order.order_number = generate_order_number(order.id)
+            order.vendors.add(*vendor_ids)
             order.save()
             context = {
                 'order' : order,
