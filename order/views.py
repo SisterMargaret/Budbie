@@ -3,12 +3,13 @@ from accounts.utils import send_notification_email
 from marketplace.context_processors import get_cart_amount
 from marketplace.models import Cart, Tax 
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import JsonResponse
 from order.forms import OrderForm
 from order.models import Order, OrderedFood, Payment
 import simplejson as json
 
-from order.utils import generate_order_number
+from order.utils import generate_order_number, get_order_total_by_vendor
 
 @login_required(login_url='login') 
 def placeOrder(request):
@@ -99,7 +100,6 @@ def payment(request):
             transaction_id = request.POST['transaction_id']
             payment_method = request.POST['payment_method']
             status = request.POST['status']
-            print(order_number, transaction_id, payment_method, status)
             
             #UPDATE THE ORDER STATUS
             order = Order.objects.get(order_number = order_number, user=request.user)
@@ -135,31 +135,51 @@ def payment(request):
             
             #SEND EMAIL NOTIFICATION TO THE CUSTOMER
             mail_subject = f'Thank you for your order'
-            mail_template = 'order/emails/order_confirmation.html'
+            mail_template = "order/emails/order_confirmation.html"
+            
+            ordered_food = OrderedFood.objects.filter(order=order)
+            customer_subtotal = 0
+            for item in ordered_food:
+                customer_subtotal += (item.price * item.quantity)
+            
+            
+            tax_data = json.loads(order.tax_data)
+            
             context = {
                 'user' : request.user,
                 'order' : order,
-                'to_email' : order.email
+                'to_email' : order.email,
+                'foods': ordered_food,
+                'domain': get_current_site(request),
+                'subtotal' : round(customer_subtotal,2),
+                'tax_data' : tax_data,
             }
             
             send_notification_email(mail_subject, mail_template, context)
             
             #SEND EMAIL NOTIFICATIONS TO VENDORS
             mail_subject = f"New order received {order.order_number}"
-            mail_template = 'order/emails/order_confirmation.html'
+            mail_template = "order/emails/new_order_received.html"
             to_emails = []
             
             for i in cart_items:
                 if i.foodItem.vendor.user.email not in to_emails:
                     to_emails.append(i.foodItem.vendor.user.email)
-            
-            
-            context = {
-                'user' : request.user,
-                'order' : order,
-                'to_email' : to_emails
-            }
-            send_notification_email(mail_subject, mail_template, context)
+
+                    ordered_food_to_vendor =   OrderedFood.objects.filter(order=order, foodItem__vendor=i.foodItem.vendor)
+                    print(ordered_food_to_vendor)
+                    context = {
+                        'user' : request.user,
+                        'order' : order,
+                        'to_email' : i.foodItem.vendor.user.email,
+                        'foods': ordered_food_to_vendor,
+                        'domain': get_current_site(request),
+                        'subtotal' : get_order_total_by_vendor(order, i.foodItem.vendor)['subtotal'],
+                        'tax_data' : get_order_total_by_vendor(order, i.foodItem.vendor)['tax_dictionary'],
+                        'grand_total' : get_order_total_by_vendor(order, i.foodItem.vendor)['grand_total'],
+                    }
+                
+                    send_notification_email(mail_subject, mail_template, context)
             
             #CLEAR THE CART
             #cart_items.delete()
