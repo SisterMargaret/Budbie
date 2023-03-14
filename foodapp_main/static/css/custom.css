@@ -54,3 +54,19 @@ table > tbody > tr > td {
 .payment-method [type=radio]:checked + img{
     outline: 2px solid #ff0000;
 }
+
+table td, table th{
+    line-height: 1rem !important;
+}
+
+@media only screen and (max-width: 480px) {
+    .user-dashboard.loader-holder{
+        max-width: fit-content;
+    }
+
+    .main-search-bar{
+        padding-top: 100px!important;
+        padding-bottom: 50px!important;
+        background-position: left !important;
+    }
+}
