@@ -166,9 +166,10 @@ DEFAULT_FROM_EMAIL = 'HungryBuff Team'
 
 GOOGLE_API_KEY = 'AIzaSyD76mTxOlw1ZyW-1aFoAx296dl9ubF4w6o'
 
-os.environ['PATH'] = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
-os.environ['PROJ_LIB'] = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
-GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\gdal304.dll')
+if DEBUG == True:
+    os.environ['PATH'] = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
+    os.environ['PROJ_LIB'] = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
+    GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\gdal304.dll')
 
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 #PAYPAL_CLIENT_SECRET = config('PAYPL_CLIENT_SECRET')
