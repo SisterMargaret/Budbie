@@ -59,6 +59,11 @@ table td, table th{
     line-height: 1rem !important;
 }
 
+.btn-outline-danger{
+    color:#f27422 !important;
+    border-color: #f27422 !important;
+}
+
 @media only screen and (max-width: 480px) {
     .user-dashboard.loader-holder{
         max-width: fit-content;
