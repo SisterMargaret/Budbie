@@ -167,7 +167,7 @@ def payment(request):
                     to_emails.append(i.foodItem.vendor.user.email)
 
                     ordered_food_to_vendor =   OrderedFood.objects.filter(order=order, foodItem__vendor=i.foodItem.vendor)
-                    print(ordered_food_to_vendor)
+                    
                     context = {
                         'user' : request.user,
                         'order' : order,
@@ -182,7 +182,7 @@ def payment(request):
                     send_notification_email(mail_subject, mail_template, context)
             
             #CLEAR THE CART
-            #cart_items.delete()
+            cart_items.delete()
             
             #Return the status
             
