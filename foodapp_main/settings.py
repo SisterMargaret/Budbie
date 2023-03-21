@@ -172,6 +172,39 @@ if DEBUG == True:
     GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\gdal304.dll')
 
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
-#PAYPAL_CLIENT_SECRET = config('PAYPL_CLIENT_SECRET')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+
+LOGGING = {
+    'version': 1,                       # the dictConfig format version
+    'disable_existing_loggers': False,  # retain the default loggers
+    'handlers': {
+        'file': {
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': 'error.log',
+            'when': 'midnight', 
+            'formatter': 'verbose',
+            'backupCount' :10,
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['file', 'console'],
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {name} {levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+}

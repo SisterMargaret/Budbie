@@ -21,5 +21,5 @@ urlpatterns = [
     path('vendor/', include('vendor.urls')),
     path('customer/', include('customer.urls')),
     
-    
+    path('onboarding/', views.onboarding, name='onboarding'),
 ]

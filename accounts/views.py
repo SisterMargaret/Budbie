@@ -8,11 +8,13 @@ from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 from accounts.utils import detectUser, send_verification_email
 from django.core.exceptions import PermissionDenied
+from foodapp_main import settings
 from order.models import Order
 from vendor.forms import VendorForm
 from django.utils.http import urlsafe_base64_decode
 from django.template.defaultfilters import slugify
 from vendor.models import Vendor
+import stripe
 
 # Restrict the vendor from accessing the customer dashboard
 def check_role_vendor(user):
@@ -258,3 +260,20 @@ def resetPasswordValidate(request, uidb64, token):
         messages.error(request, 'Invalid link')
         return redirect('myAccount')
     
+def onboarding(request):
+    return_url = ("%s://www.%s" % (request.scheme, request.get_host()))
+    
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    # #Creates express account
+    account =  stripe.Account.create(type="express")
+    #account.        
+    #Create onboarding url link
+    onboarding_url = stripe.AccountLink.create(
+            account=account.id,
+            refresh_url=f"{return_url}/login",
+            return_url=f"{return_url}/vendorDashboard",
+            type="account_onboarding",
+            )
+        
+    print(onboarding_url)
+    return redirect(onboarding_url.url)

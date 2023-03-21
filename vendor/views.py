@@ -13,8 +13,7 @@ from order.models import Order, OrderedFood
 from vendor.forms import OpeningHoursForm, VendorForm
 from vendor.models import OpeningHour, Vendor
 from vendor.utils import get_vendor
-
-
+import logging
 
 @login_required(login_url='login')
 @user_passes_test(test_func=check_role_vendor)
@@ -130,25 +129,34 @@ def deleteCategory(request, pk=None):
 @login_required(login_url='login')
 @user_passes_test(test_func=check_role_vendor)
 def addFoodItem(request):
-    if request.POST:
-        form = FoodItemForm(request.POST, request.FILES)
-        
-        if form.is_valid():
-            food_title = form.cleaned_data['food_title']
-            foodItem = form.save(commit=False)
-            foodItem.vendor = get_vendor(request)
-            foodItem.slug = slugify(food_title)+'-'+str(foodItem.id)
-            form.save()
-            messages.success(request, "Food Item added successfully")
-            return redirect('foodItemsByCategory', foodItem.category.id)
+    logger = logging.getLogger()
+    try:
+        if request.POST:
+            form = FoodItemForm(request.POST, request.FILES)
+            
+            if form.is_valid():
+                food_title = form.cleaned_data['food_title']
+                foodItem = form.save(commit=False)
+                foodItem.vendor = get_vendor(request)
+                foodItem.slug = slugify(food_title)+'-'+str(foodItem.id)
+                form.save()
+                messages.success(request, "Food Item added successfully")
+                return redirect('foodItemsByCategory', foodItem.category.id)
+            else:
+                logger.info(form.errors)
+    
         else:
-            print(form.errors)
-    else:
-        form = FoodItemForm()
-    form.fields['category'].queryset=Category.objects.filter(vendor=get_vendor(request))
+            form = FoodItemForm()
+    
+        form.fields['category'].queryset=Category.objects.filter(vendor=get_vendor(request))
+        
+    except Exception as ex:
+         logger.fatal(f"Method:addFoodItem, error:{ex}")
+  
     context = {
-        'form' : form
+            'form' : form
     }
+    
     return render(request, 'vendor/add_foodItem.html', context)
 
 @login_required(login_url='login')
@@ -266,3 +274,6 @@ def myOrders(request):
         'orders' : orders,
     }
     return render(request, 'vendor/my_orders.html', context)
+
+
+    

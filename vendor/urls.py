@@ -26,4 +26,5 @@ urlpatterns = [
     path('order_detail/<str:order_number>/', views.orderDetail, name="vendorOrderDetail"),
     
     path('my-orders/', views.myOrders, name='vendorMyOrders'),
+    
 ]

@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 {%load static%}
 {% block content%}
-{{user.username}}
-{{user.get_role}}
 {% include 'includes/alerts.html'%}
 	<!-- Main Section Start -->
     <div class="main-section">
+        {%if vendor.user__is_approved %}
+            {%if not vendor.is_payment_account_setup %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fa fa-exclamation-circle"></i> You have not updated your payment details yet. Click <a href="{% url 'onboarding'%}" class="font-weight-bold" style="color:unset">here</a> to update your bank account details.
+                </div>
+            {%endif%}
+        {%endif%}
        {% include 'includes/cover.html'%}
         <div class="page-section account-header buyer-logged-in">
             <div class="container">

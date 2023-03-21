@@ -22,3 +22,6 @@ def get_google_api(request):
 
 def get_paypal_clientid(request):
     return {'PAYPAL_CLIENT_ID': settings.PAYPAL_CLIENT_ID}
+
+# def get_stripe_client_key(request):
+#     return {'STRIPE_CLIENT_KEY': settings.STRIPE_SECRET_KEY}

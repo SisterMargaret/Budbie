@@ -12,6 +12,8 @@ class Vendor(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
     vendor_license = models.ImageField(upload_to='vendor/license')
     is_approved = models.BooleanField(default=False)
+    is_payment_account_setup = models.BooleanField(default=False, null=True)
+    payment_account_key = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     
