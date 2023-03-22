@@ -3825,6 +3825,14 @@
     },
     {
       "model": "sessions.session",
+      "pk": "3ewpcxaf51o65aypei93omub2btk7lyn",
+      "fields": {
+        "session_data": ".eJxVjMsOwiAQRf-FtSEwpUNx6d5vIDM8pGogKe3K-O_apAvd3nPOfQlP21r81tPi5yjOYgBx-h2ZwiPVncQ71VuTodV1mVnuijxol9cW0_NyuH8HhXr51sQORgUuqayHpBJiRAs6gmO2jBmZJ2dUDhq1AcicCYwDbYmUHScQ7w__ZzeY:1peK5C:I7ysF37mQJdvh3aGOqJ_403xTImnkA7lGyPY4z1q3i8",
+        "expire_date": "2023-04-03T18:18:10.044Z"
+      }
+    },
+    {
+      "model": "sessions.session",
       "pk": "8cczk0ce7glvbmv6a71kzssqye0h6sz7",
       "fields": {
         "session_data": "e30:1pTLcf:NrZqdYyxs5UwiFmgZHXPwM_6Kr2dIteTzklVnvMayqQ",
@@ -3873,6 +3881,14 @@
     },
     {
       "model": "sessions.session",
+      "pk": "sihnt9fp5wfm0gqw70nvw8qydv2pox9u",
+      "fields": {
+        "session_data": ".eJxVjMsOwiAQRf-FtSEwpUNx6d5vIDM8pGogKe3K-O_apAvd3nPOfQlP21r81tPi5yjOYgBx-h2ZwiPVncQ71VuTodV1mVnuijxol9cW0_NyuH8HhXr51sQORgUuqayHpBJiRAs6gmO2jBmZJ2dUDhq1AcicCYwDbYmUHScQ7w__ZzeY:1peNp7:TuS7Ro9lJfLyLMKkMqIRBoAl_IvNUsn-JcQkeH_D7Oo",
+        "expire_date": "2023-04-03T22:17:49.335Z"
+      }
+    },
+    {
+      "model": "sessions.session",
       "pk": "uu469861bimu4u1ssshkhnrf8yzjejfk",
       "fields": {
         "session_data": ".eJxVjMsOwiAQRf-FtSFDeQgu3fsNZGYAqRqalHZl_HfbpAvdnnPufYuI61Lj2vMcxyQuQmtx-oWE_MxtN-mB7T5JntoyjyT3RB62y9uU8ut6tH8HFXvd1gBBsbGAKaRslPMOSmFNZyStSgG7YQK0mjBZHbxRaLmQHwb2jrMSny8PWjiE:1pZxiW:bMlWb3tQrcbPitcLGCSblqrQ1Q1LDA7_VRyKsTied3s",
@@ -3891,7 +3907,7 @@
         "phone_number": "",
         "role": null,
         "date_joined": "2023-02-10T18:40:58.158Z",
-        "last_login": "2023-03-13T15:03:39.941Z",
+        "last_login": "2023-03-20T17:35:09.349Z",
         "created_date": "2023-02-10T18:40:58.158Z",
         "modified_date": "2023-02-18T12:01:33.915Z",
         "is_admin": true,
@@ -3954,7 +3970,7 @@
         "phone_number": "",
         "role": 1,
         "date_joined": "2023-02-18T18:39:32.533Z",
-        "last_login": "2023-03-14T17:13:05.374Z",
+        "last_login": "2023-03-20T22:17:49.257Z",
         "created_date": "2023-02-18T18:39:32.533Z",
         "modified_date": "2023-02-19T11:41:42.273Z",
         "is_admin": false,
@@ -4042,7 +4058,7 @@
         "longitude": "-0.2586031",
         "location": "SRID=4326;POINT (-0.2586031 52.5168373)",
         "created_at": "2023-02-10T19:10:41.616Z",
-        "modified_at": "2023-03-13T15:03:39.958Z"
+        "modified_at": "2023-03-20T17:35:09.462Z"
       }
     },
     {
@@ -4099,7 +4115,7 @@
         "longitude": "-0.1386031",
         "location": "SRID=4326;POINT (-0.1386031 51.5176218)",
         "created_at": "2023-02-18T18:39:32.546Z",
-        "modified_at": "2023-03-14T17:13:05.389Z"
+        "modified_at": "2023-03-20T22:17:49.324Z"
       }
     },
     {
@@ -4169,6 +4185,8 @@
         "slug": "HungryBuff-guy",
         "vendor_license": "vendor/license/MicrosoftTeams-image_4.png",
         "is_approved": true,
+        "is_payment_account_setup": false,
+        "payment_account_key": null,
         "created_at": "2023-02-17T15:33:53.707Z",
         "modified_at": "2023-03-02T13:11:16.585Z"
       }
@@ -4183,6 +4201,8 @@
         "slug": "Clean-Chef",
         "vendor_license": "vendor/license/iisexpress.png",
         "is_approved": true,
+        "is_payment_account_setup": false,
+        "payment_account_key": null,
         "created_at": "2023-02-18T18:39:32.837Z",
         "modified_at": "2023-03-02T15:50:07.480Z"
       }
@@ -4197,6 +4217,8 @@
         "slug": "Second-Restaurant",
         "vendor_license": "vendor/license/image-20210915-133217.png",
         "is_approved": true,
+        "is_payment_account_setup": false,
+        "payment_account_key": null,
         "created_at": "2023-02-25T21:34:52.593Z",
         "modified_at": "2023-03-02T15:49:43.517Z"
       }
@@ -4211,6 +4233,8 @@
         "slug": "hostiseum-rest-35",
         "vendor_license": "vendor/license/image-20210915-133217_IRKqMnC.png",
         "is_approved": true,
+        "is_payment_account_setup": false,
+        "payment_account_key": null,
         "created_at": "2023-02-27T11:51:06.148Z",
         "modified_at": "2023-03-02T15:49:23.558Z"
       }
