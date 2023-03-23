@@ -52,10 +52,9 @@
                                                     <span><small class="text-muted">{{vendor.user_profile.address}}</small></span>
                                                     {%endif%}
 													<br>
+													{% if vendor.mls%}
 													<span><small><b>{{vendor.mls}} miles</b> away</small></span>
-													<span class="post-categories">
-                                                        <span>Type of food :	</span> Apple
-														Juice</span>
+													{% endif%}
 													
 												</div>
 												<div class="list-option">
