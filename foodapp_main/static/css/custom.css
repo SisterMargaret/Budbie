@@ -74,4 +74,14 @@ table td, table th{
         padding-bottom: 50px!important;
         background-position: left !important;
     }
+
+    .image-holder + .text-holder + .price-holder{
+        margin-top: 0;
+        top: 5px !important;
+        margin-left: 100px !important;
+    }
+    
+    .menu-itam-holder .menu-itam-list .price-holder a i {
+        margin-left: 3px;
+    }
 }

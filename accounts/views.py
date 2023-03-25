@@ -275,5 +275,5 @@ def onboarding(request):
             type="account_onboarding",
             )
         
-    print(onboarding_url)
+    
     return redirect(onboarding_url.url)
