@@ -107,8 +107,8 @@ def placeOrder(request):
 
                 kkp =  stripe.checkout.Session.create(
                     mode="setup",
-                    success_url="https://example.com/success",
-                    cancel_url="https://example.com/cancel",
+                    success_url="https://hungrybuff.co/customer/my-orders/",
+                    cancel_url="https://hungrybuff.co/cart",
                     setup_intent_data={
                         "description" : "A description for setup",
                         "metadata": {
