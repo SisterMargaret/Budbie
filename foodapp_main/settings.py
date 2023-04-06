@@ -174,6 +174,9 @@ if DEBUG == True:
     os.environ['PATH'] = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
     os.environ['PROJ_LIB'] = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
     GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\gdal304.dll')
+    LOCALE = "en-gb.UTF-8"
+else:
+    LOCALE = "en-GB.UTF-8"
 
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
