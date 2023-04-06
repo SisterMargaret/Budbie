@@ -176,7 +176,7 @@ if DEBUG == True:
     GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\gdal304.dll')
     LOCALE = "en-gb.UTF-8"
 else:
-    LOCALE = "en-GB.utf-8"
+    LOCALE = "en_GB.utf-8"
 
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
