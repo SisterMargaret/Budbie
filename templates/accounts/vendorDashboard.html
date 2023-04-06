@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {%load static%}
+{%load filters%}
 {% block content%}
 {% include 'includes/alerts.html'%}
 	<!-- Main Section Start -->
     <div class="main-section">
         {%if vendor.is_approved %}
-            {%if not vendor.is_payment_account_setup %}
+            {%if not stripe_setup %}
                 <div class="alert alert-danger" role="alert">
                     <i class="fa fa-exclamation-circle"></i> You have not updated your payment details yet. Click <a href="{% url 'onboarding'%}" class="font-weight-bold" style="color:unset">here</a> to update your bank account details.
                 </div>
@@ -41,7 +42,7 @@
                                                 Total Revenue
                                             </div>
                                             <div class="card-body text-center">
-                                                <a href="#"><h5 class="card-title">£{{total_revenue}}</h5></a>    
+                                                <a href="#"><h5 class="card-title">{{total_revenue | currency}}</h5></a>    
                                             </div>
                                         </div>
                                     </div>
@@ -51,7 +52,7 @@
                                                 This month revenue
                                             </div>
                                             <div class="card-body text-center">
-                                            <a href="#"><h5 class="card-title">£{{current_month_revenue}}</h5></a>    
+                                            <a href="#"><h5 class="card-title">{{current_month_revenue | currency}}</h5></a>    
                                             </div>
                                         </div>
                                     </div>
@@ -77,8 +78,8 @@
                                                         <tr>
                                                             <td >{{order.order_number}}</th>
                                                             <td>{{order.created_at}}</td>
-                                                            <td>£{{order.get_total_by_vendor.grand_total}}</td>
-                                                            <td>{{order.get_total_by_vendor.total_tax}}</td>
+                                                            <td>{{order.get_total_by_vendor.grand_total | currency}}</td>
+                                                            <td>{{order.get_total_by_vendor.total_tax | currency}}</td>
                                                             <td><a href="{%url 'vendorOrderDetail' order.order_number%}" class="btn btn-success">{{order.status}}</a></td>
                                                         </tr>
                                                         {%endfor%}

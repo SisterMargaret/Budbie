@@ -1,5 +1,6 @@
 {% extends 'base.html'%}
 {%load static%}
+{% load filters %}
 {% block content%}
 			<!-- Main Section Start -->
 			<div class="main-section pt-5">
@@ -94,7 +95,7 @@
                                                                             <span>{{item.quantity}} QTY</span>
                                                                          </div>
                                                                          <div class="price-holder">
-                                                                             <span class="price">£{{item.foodItem.price}}</span>
+                                                                             <span class="price">{{item.foodItem.price | currency}}</span>
                                                                              <span id="add-menu-loader-10"></span>
                                                                          </div>
                                                                      </li>
@@ -113,8 +114,7 @@
                                                         <li style="list-style-type: none;">
                                                             Subtotal
                                                             <span class="price float-right">
-                                                                <span class="currency">$</span>
-                                                                <span id="subtotal">{{subtotal}}</span>
+                                                                <span id="subtotal">{{subtotal | currency}}</span>
                                                             </span>
                                                         </li>
                                                         {% for key, value in tax_dictionary.items%}
@@ -122,8 +122,7 @@
                                                                 <li style="list-style-type: none;">
                                                                     {{key}}<small>({{i}}%)</small>
                                                                     <span class="price float-right">
-                                                                        <span class="currency">$</span>
-                                                                        <span id="tax-{{key}}">{{j}}</span>
+                                                                        <span id="tax-{{key}}">{{j | currency}}</span>
                                                                     </span>
                                                                 </li>
                                                             {% endfor %}
@@ -131,8 +130,7 @@
                                                         <li style="list-style-type: none; font-weight:600">
                                                             Total
                                                             <span class="price float-right">
-                                                                <span class="currency">$</span>
-                                                                <span id="grandtotal">{{grand_total}}</span>
+                                                                <span id="grandtotal">{{grand_total | currency}}</span>
                                                             </span>
                                                         </li>
                                                         <h5> SELECT PAYMENT METHOD</h5>
@@ -143,8 +141,9 @@
                                                                 <img src="{% static 'images/PayPal.png'%}" alt="PayPal" width="100"/>
                                                             </label>&emsp;
                                                             <label>
-                                                                <input type="radio" name="payment_method" value="RazorPay">
-                                                                <img src="{% static 'images/razorpay_logo.png'%}" alt="RazorPay" width="100"/>
+                                                                <input type="radio" name="payment_method" value="Stripe">
+                                                                <img src="{% static 'images/razorpay_logo.png'%}" alt="Stripe" 
+                                                                    width="100"/>
                                                             </label>
                                                             {% comment %} <label>
                                                                 <apple-pay-button buttonstyle="black" type="check-out" locale="en-GB"></apple-pay-button>
@@ -152,7 +151,7 @@
                                                         </div>
                                                         <span class="text-danger" id="payment-method-error"></span>
                                                         <button onclick="return payMethodConfirm();" type="submit" 
-                                                                class="btn btn-danger w-100 p-2 mt-2">PLACE ORDER</button>
+                                                                class="btn btn-danger w-100 p-2 mt-2">PLACE ORDER FOR COLLECTION</button>
                                                     </ul>
                                                     </form>
                                                     <!-- End of form-->

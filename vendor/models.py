@@ -3,7 +3,8 @@ from django.db import models
 
 from accounts.models import User, UserProfile
 from accounts.utils import send_notification_email, send_verification_email
-
+from foodapp_main import settings
+import stripe
 # Create your models here.
 class Vendor(models.Model):
     user = models.OneToOneField(User, related_name="user", on_delete=models.CASCADE)
@@ -30,6 +31,8 @@ class Vendor(models.Model):
             if i.is_closed:
                 is_open = False
             else:
+                print (i.from_hour)
+                print(datetime.strptime(i.from_hour, "%I:%M %p"))
                 start = str(datetime.strptime(i.from_hour, "%I:%M %p").time())
                 end = str(datetime.strptime(i.to_hour, "%I:%M %p").time())
                 
@@ -60,6 +63,15 @@ class Vendor(models.Model):
 
         return super(Vendor, self).save(*args, **kwargs)
     
+    def is_stripe_setup_complete(self):
+        if not self.is_payment_account_setup :
+            if self.payment_account_key:
+                stripe.api_key = settings.STRIPE_SECRET_KEY
+                account = stripe.Account.retrieve(id=self.payment_account_key)
+                if account.details_submitted and account.charges_enabled:
+                    return True
+        return False
+        
 DAYS= [
     (1, ("Monday")),
     (2, ("Tuesday")),

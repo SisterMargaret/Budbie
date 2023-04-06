@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from accounts.utils import send_notification_email
+from foodapp_main import settings
 from marketplace.context_processors import get_cart_amount
 from marketplace.models import Cart, Tax 
 from django.contrib.auth.decorators import login_required
@@ -8,7 +9,7 @@ from django.http import JsonResponse
 from order.forms import OrderForm
 from order.models import Order, OrderedFood, Payment
 import simplejson as json
-
+import stripe
 from order.utils import generate_order_number, get_order_total_by_vendor
 
 @login_required(login_url='login') 
@@ -86,6 +87,39 @@ def placeOrder(request):
                 'order' : order,
                 'cart_items' : cart_items
             }
+            print(order.vendors)
+            print(request.POST['payment_method'])
+            if request.POST['payment_method'] == 'Stripe':
+              
+              
+                
+            # Set your secret key. Remember to switch to your live secret key in production.
+            # See your keys here: https://dashboard.stripe.com/apikeys
+                stripe.api_key = settings.STRIPE_SECRET_KEY
+                
+                paymentIntent = stripe.PaymentIntent.create(
+                    amount = int(grandTotal * 100), #converting into pence
+                    currency = "gbp",
+                    automatic_payment_methods = {"enabled" : True},
+                    application_fee_amount = 1,
+                    transfer_data = {"destination": "acct_1MsPmxIIEzOr8uuC"},
+                )
+
+                kkp =  stripe.checkout.Session.create(
+                    mode="setup",
+                    success_url="https://example.com/success",
+                    cancel_url="https://example.com/cancel",
+                    setup_intent_data={
+                        "description" : "A description for setup",
+                        "metadata": {
+                            "a" : "b",
+                            "b" : "c"
+                        },
+                        "on_behalf_of": "acct_1MsPmxIIEzOr8uuC"
+                    },
+                    payment_method_types = ["card"]
+                )
+                return redirect(kkp.url)
             return render(request, 'order/placeOrder.html', context)
         else:
             print(form.errors)

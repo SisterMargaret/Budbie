@@ -1,4 +1,8 @@
 let autocomplete;
+let britishPound = Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP",
+});
 
 function initAutoComplete(){
 autocomplete = new google.maps.places.Autocomplete(
@@ -37,7 +41,7 @@ function onPlaceChanged (){
     });
 
     //loop through address and assign other address fields
-    console.log(place.address_components)
+    //console.log(place.address_components)
 
     for(var i=0; i < place.address_components.length; i++){
         for(var j=0; j < place.address_components[i].types.length; j++){
@@ -101,7 +105,6 @@ $(document).ready(function(){
   $(".item_qty").each(function(){
     var id = $(this).attr('data-id');
     var qty = $(this).attr('data-qty');
-    console.log(id)
     $('#'+id).html(qty);
 });
   //Decrease the cart
@@ -193,15 +196,13 @@ $(document).ready(function(){
 
     //Apply cart amounts
     function applyCartAmounts(tax_dictionary, subtotal, grand_total){
-        console.log(window.location.pathname);
         if (window.location.pathname == '/cart/'){
-            $('#subtotal').html(subtotal);
-            $('#grandtotal').html(grand_total);
+            $('#subtotal').html(britishPound.format(subtotal));
+            $('#grandtotal').html(britishPound.format(grand_total));
 
             for(key in tax_dictionary){
                 for(key2 in tax_dictionary[key]){
-                    console.log(tax_dictionary[key][key2]);
-                    $('#tax-'+ key).html(tax_dictionary[key][key2]);
+                    $('#tax-'+ key).html(britishPound.format(tax_dictionary[key][key2]));
                 }
             } 
         }

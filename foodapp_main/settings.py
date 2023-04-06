@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'menu',
     'marketplace',
     'django.contrib.gis',
-    'order'
+    'order',
+    'foodapp_main',
+    
 ]
 
 MIDDLEWARE = [
@@ -56,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'foodapp_main.locale_middleware.LocaleMiddleware',
     'order.request_object.RequestObjectMiddleware', #custom middleware created to access the request object in models.py
 ]
 

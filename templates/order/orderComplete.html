@@ -51,7 +51,7 @@
                                 <a href="{% url 'vendorDetail' item.foodItem.vendor.slug %}" class="text-muted">{{item.foodItem.vendor.vendor_name}}</a>
                             </td>
                             <td>{{item.quantity}} QTY</td>
-                            <td>£{{item.foodItem.price}}</td>
+                            <td>{{item.foodItem.price | currency}}</td>
                         </tr>	
                         {% endfor %}
                     </tbody>	
@@ -65,8 +65,7 @@
                             <li style="list-style-type: none;">
                                 Subtotal
                                 <span class="price float-right">
-                                    <span class="currency">£</span>
-                                    <span id="subtotal">{{subtotal}}</span>
+                                    <span id="subtotal">{{subtotal  | currency}}</span>
                                 </span>
                             </li>
                             {% for key, value in tax_data.items%}
@@ -74,8 +73,7 @@
                                     <li style="list-style-type: none;">
                                         {{key}}<small>({{i}}%)</small>
                                         <span class="price float-right">
-                                            <span class="currency">£</span>
-                                            <span id="tax-{{key}}">{{j}}</span>
+                                            <span id="tax-{{key}}">{{j | currency}}</span>
                                         </span>
                                     </li>
                                 {% endfor %}
@@ -83,8 +81,7 @@
                             <li style="list-style-type: none; font-weight:600">
                                 Total
                                 <span class="price float-right">
-                                    <span class="currency">£</span>
-                                    <span id="total">{{order.total}}</span>
+                                    <span id="total">{{order.total | currency}}</span>
                                 </span>
                             </li>
                             

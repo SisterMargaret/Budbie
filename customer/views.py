@@ -43,23 +43,26 @@ def myOrders(request):
 
 def orderDetails(request, order_number):
     try:
-        order = Order.objects.get(order_number = order_number, is_ordered=True)
-        orderedFood = OrderedFood.objects.filter(order=order)
+        print(order_number)
+        order = Order.objects.find(order_number = order_number, is_ordered=True)
+        if order:
+            orderedFood = OrderedFood.objects.filter(order=order)
     
-        subtotal = 0
-        for item in orderedFood:
-            subtotal += (item.price* item.quantity)
+            subtotal = 0
+            for item in orderedFood:
+                subtotal += (item.price* item.quantity)
+                
+            tax_data = json.loads( order.tax_data)
             
-        tax_data = json.loads( order.tax_data)
-        
-        context = {
-            'order' : order,
-            'orderedFood': orderedFood,
-            'subtotal' : subtotal,
-            'tax_data' : tax_data
-        }
-        return render(request, 'customer/order_details.html', context)
+            context = {
+                'order' : order,
+                'orderedFood': orderedFood,
+                'subtotal' : subtotal,
+                'tax_data' : tax_data
+            }
+            return render(request, 'order_details.html', context)
+        return redirect('customerDashboard')
     except:
-        return redirect('customer')
+        return redirect('customerDashboard')
     
     

@@ -15,6 +15,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.template.defaultfilters import slugify
 from vendor.models import Vendor
 import stripe
+import locale
 
 # Restrict the vendor from accessing the customer dashboard
 def check_role_vendor(user):
@@ -190,8 +191,14 @@ def vendorDashboard(request):
     for i in current_month_orders:
         current_month_revenue += i.get_total_by_vendor()['grand_total']
     
+    #Check if the vendor's account is setup properly in Stripe
+    stripe_setup_fine = vendor.is_stripe_setup_complete()
+    
+    # locale.setlocale(locale.LC_ALL,)            
+    
     context = {
         'vendor' : vendor,
+        'stripe_setup' : stripe_setup_fine,
         'orders_count' : orders_count,
         'orders' : orders[:10],
         'total_revenue' : total_revenue,
@@ -261,19 +268,48 @@ def resetPasswordValidate(request, uidb64, token):
         return redirect('myAccount')
     
 def onboarding(request):
-    return_url = ("%s://www.%s" % (request.scheme, request.get_host()))
+    return_url = ("%s://%s" % (request.scheme, request.get_host()))
     
     stripe.api_key = settings.STRIPE_SECRET_KEY
-    # #Creates express account
-    account =  stripe.Account.create(type="express")
-    #account.        
-    #Create onboarding url link
-    onboarding_url = stripe.AccountLink.create(
-            account=account.id,
-            refresh_url=f"{return_url}/login",
-            return_url=f"{return_url}/vendorDashboard",
-            type="account_onboarding",
-            )
-        
+    vendor = Vendor.objects.get(user=request.user)
     
-    return redirect(onboarding_url.url)
+    if not vendor.payment_account_key:
+        # #Creates express account
+        account =  stripe.Account.create(type="express", 
+                                        email=vendor.user.email,
+                                        business_profile={
+                                                'name': vendor.vendor_name,
+                                                'support_email': vendor.user.email,
+                                                'support_address' : {
+                                                    'line1' : vendor.user_profile.address,
+                                                    'state' : vendor.user_profile.state,
+                                                    'city' : vendor.user_profile.city,
+                                                    'postal_code' : vendor.user_profile.postcode,
+                                                }
+                                            },
+                                        country='GB',
+                                        settings={
+                                                    'payouts' : 
+                                                        {
+                                                            'schedule': {'interval' : 'weekly',
+                                                                            'weekly_anchor' : 'friday'
+                                                                        },
+                                                        }
+                                                }
+                                        )
+        vendor.payment_account_key = account.id
+        vendor.save()
+        print('inside new account key')
+    else:
+        account = stripe.Account.retrieve(id=vendor.payment_account_key)
+
+
+    #Create onboarding url link
+    onboarding = stripe.AccountLink.create(
+                account=account.id,
+                refresh_url=f"{return_url}/login",
+                return_url=f"{return_url}/vendorDashboard",
+                type="account_onboarding",
+            )
+    
+    return redirect(onboarding.url)
