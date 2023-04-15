@@ -106,7 +106,6 @@ def placeOrder(request):
                                     amount=int(order.total * 100),
                                     currency='gbp',
                                     automatic_payment_methods={"enabled": True},
-                                    application_fee_amount=123,
                                     capture_method="manual", #allows to place hold on the payment
                                     #on_behalf_of='acct_1HYGocIWUKRSbB8m',
                                     transfer_data = {"destination": cart_items[0].foodItem.vendor.payment_account_key},
@@ -263,7 +262,6 @@ def stripePlaceOrder(request):
                                 amount=1000,
                                 currency='gbp',
                                 automatic_payment_methods={"enabled": True},
-                                application_fee_amount=123,
                                 capture_method="manual", #allows to place hold on the payment
                                 #on_behalf_of='acct_1HYGocIWUKRSbB8m',
                                 transfer_data = {"destination": "acct_1MsPmxIIEzOr8uuC"},
@@ -290,7 +288,9 @@ def updateOrderStatus(request):
             paymentIntent = stripe.PaymentIntent.retrieve(order.payment.transaction_id)
             if paymentIntent and paymentIntent.status == 'requires_capture' and status == 'Accepted':
                 #Capture the payment if accepted
-                paymentIntent = stripe.PaymentIntent.capture(order.payment.transaction_id)
+                #application fee amount should be in pence so multiplying with 100 to convert
+                paymentIntent = stripe.PaymentIntent.capture(order.payment.transaction_id, 
+                                                                application_fee_amount=(order.total*settings.HUNGRYBUFF_FEE/100)*100)
                 if paymentIntent.status == "succeeded":
                     order.status = status
                     order.save()
