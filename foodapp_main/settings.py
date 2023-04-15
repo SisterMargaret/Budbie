@@ -184,8 +184,10 @@ else:
 
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_ENDPOINT_SECRET = config('STRIPE_ENDPOINT_SECRET')
 HUNGRYBUFF_FEE = config('HUNGRYBUFF_FEE', cast=float)
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+
 
 LOGGING = {
     'version': 1,                       # the dictConfig format version
