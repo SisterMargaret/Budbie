@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseNotAllowed
 from django.views.decorators.csrf import csrf_exempt
 import stripe
 from foodapp_main import settings
@@ -21,10 +21,10 @@ def webhook(request):
         )
     except ValueError as e:
         # Invalid payload
-        raise e
+        return HttpResponseBadRequest(e)
     except stripe.error.SignatureVerificationError as e:
         # Invalid signature
-        raise e
+        return HttpResponseNotAllowed(e)
 
     # Handle the event
     if event['type'] == 'payment_intent.created':
