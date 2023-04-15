@@ -4,6 +4,42 @@ let britishPound = Intl.NumberFormat("en-GB", {
     currency: "GBP",
 });
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function createRadioElement( name, checked, option, value) {
+    var radioInput;
+    try {
+         var radioHtml = '<input type="radio" name="' + name + '"';
+         if ( checked ) {
+             radioHtml += ' checked="checked"';
+         }
+         radioHtml += ' value="'+value + '"'
+         radioHtml += '>'+ option + '</input>';
+         radioInput = document.createElement(radioHtml);
+     } catch( err ) {
+         radioInput = document.createElement('input');
+         radioInput.setAttribute('type', 'radio');
+         radioInput.setAttribute('name', name);
+         if ( checked ) {
+             radioInput.setAttribute('checked', 'checked');
+         }
+     }
+     return radioInput;}
+
 function initAutoComplete(){
 autocomplete = new google.maps.places.Autocomplete(
     document.getElementById('id_address'),
@@ -263,5 +299,72 @@ $(document).ready(function(){
             }
         })
     });
+
+    $('.update-order-status').on('click', function(e){
+        e.preventDefault();
+        
+        if (e.target.getAttribute('data-order-newstatus') == 'Rejected'){
+            //update reject modal title
+            $('#orderRejectModalLabel').html("Rejecting the order " + e.target.getAttribute('data-order'));
+            //pass the required info
+            $('#reject-data').data('order', e.target.getAttribute('data-order'));
+            $('#reject-data').data('order-status', e.target.getAttribute('data-order-status'));
+            $('#reject-data').data('order-newstatus', e.target.getAttribute('data-order-newstatus'));
+
+            $('#OrderRejectModal').modal('show');
+        }
+        else if (e.target.getAttribute('data-order-newstatus') == 'Accepted' 
+                || e.target.getAttribute('data-order-newstatus') == 'Ready'
+                || e.target.getAttribute('data-order-newstatus') == 'Collected'){
+            updateOrderStatus(
+                e.target.getAttribute('data-order'),
+                e.target.getAttribute('data-order-status'),
+                e.target.getAttribute('data-order-newstatus'),
+                null
+            );
+
+           
+        }
+    });
+
+    $('#rejectForm').on('submit', function(e){
+        e.preventDefault();
+
+        order_number = $('#reject-data').data('order');
+        status = $('#reject-data').data('order-status');
+        newStatus = $('#reject-data').data('order-newstatus');
+        reason = $('#message-text').val()
+        updateOrderStatus(order_number, status, newStatus, reason);
+        $('#OrderRejectModal').modal('hide');
+
+    });
+
+    $('#cancel,.close').on('click', function(e){
+        e.preventDefault();
+        $('#OrderRejectModal').modal('hide');
+    });
+
+    function updateOrderStatus(order_number, status, newStatus, reason){
+        $.ajax({
+            url: $("#updateOrderStatus").attr("data-order-status-url"),
+            type:'POST',
+            data: {
+                    'order_number' : order_number,
+                    'status' :  status,
+                    'newstatus' : newStatus,
+                    'csrfmiddlewaretoken': getCookie('csrftoken'),
+                    'reason': reason,
+                },
+            success: function(response){
+                if (response.status == 'Success'){
+                    $("a[data-order='"+  order_number +"']").html(response.newStatus);
+                    swal(response.message, '', 'info');
+                } 
+                else{
+                    swal(response.message, '', 'error');
+                } 
+            }      
+        });
+    }
 //document ready close
 });

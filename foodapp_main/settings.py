@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'qrcode',
+    'rest_framework',
     'accounts',
     'vendor',
     'customer',
@@ -47,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'order',
     'foodapp_main',
-    
+    'restapi',
 ]
 
 MIDDLEWARE = [
@@ -175,8 +177,10 @@ if DEBUG == True:
     os.environ['PROJ_LIB'] = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
     GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'appenv\Lib\site-packages\osgeo\gdal304.dll')
     LOCALE = "en-gb.UTF-8"
+    CURRENT_SITE = "http://127.0.0.1:8000"
 else:
     LOCALE = "en_GB.utf-8"
+    CURRENT_SITE = "https://hungrybuff.co"
 
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')

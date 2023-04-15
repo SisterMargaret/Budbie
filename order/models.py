@@ -11,6 +11,7 @@ class Payment(models.Model):
                       ('RazorPay', 'RazorPay'),
                       ('ApplePay', 'ApplePay'),
                       ('GooglePay', 'GooglePay'),
+                      ('Stripe', 'Stripe'),
                       )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     transaction_id = models.CharField(max_length=100)
@@ -26,6 +27,8 @@ class Order(models.Model):
     STATUS = (
         ('New', 'New'),
         ('Accepted', 'Accepted'),
+        ('Ready', 'Ready'),
+        ('Rejected', 'Rejected'),
         ('Completed', 'Completed'),
         ('Cancelled', 'Cancelled'),
     )

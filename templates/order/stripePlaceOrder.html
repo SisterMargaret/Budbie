@@ -1,7 +1,7 @@
 {% extends 'base.html'%}
 {%load filters%}
 {% block content%}
-			<!-- Main Section Start -->
+            <!-- Main Section Start -->
 			<div class="main-section pt-5">
 				<div class="page-section">
 					<div class="container">
@@ -34,8 +34,25 @@
 												
 												 </div>
 											</div>
+                                            <form id="payment-form">
+                                                <!-- placeholder for Elements -->
+                                               <div id="payment-element">
+
+                                               </div>
+                                               <!-- We'll put the error messages in this element -->
+                                               <div id="card-errors" role="alert"></div>
+                                               <div>
+                                                    <button id="payment-button" 
+                                                            data-secret="{{ client_secret }}" 
+                                                            data-order-complete-url="{% url 'orderComplete'%}"  
+                                                                type="submit">
+                                                            <div class="spinner hidden" id="spinner"></div>
+                                                            <span id="button-text">Submit Payment</span>
+                                                        </button>
+                                                </div>
+                                                <div id="error-message"></div>
+                                             </form>
 										</div>
-										
 									</div>
 								</div>
 							</div>
@@ -86,35 +103,11 @@
                                                                 <span id="grandtotal">{{grand_total | currency}}</span>
                                                             </span>
                                                         </li>
-														{% if order.payment_method == 'PayPal'%}
-															<div id="paypal-button-container"></div>
-														{%else%}
-															<form id="payment-form">
-																{%csrf_token%}
-																<!-- placeholder for Elements -->
-																<div id="payment-element">
-					
-																</div>
-																<!-- We'll put the error messages in this element -->
-																<div id="card-errors" role="alert"></div>
-																
-																<button id="payment-button" 
-																		data-secret="{{ client_secret }}" 
-																		data-payment-url = "{% url 'payment'%}"
-																		data-order-complete-url="{% url 'orderComplete'%}"
-																		data-order-number="{{order.order_number}}"
-																		data-transaction-id="{{paymentIntent}}"
-																		data-cart-items="{{cart_items_json}}"  
-																		type="submit">
-																	<div class="spinner hidden" id="spinner"></div>
-																	<span id="button-text">Submit Payment</span>
-																</button>
+                                                        
+                                                      
 
-																<div id="error-message"></div>
-															</form>
-														{%endif%}
                                                         {% comment %} <a href="{% url 'checkout' %}" class="btn btn-danger w-100 p-2 mt-2">Proceed to Checkout</a> {% endcomment %}
-													</ul>
+                                                    </ul>
                                                 </div>   
 											</div>
 										</div>
@@ -127,94 +120,6 @@
 				</div>
 			</div>
 			<!-- Main Section End -->
-			{% if order.payment_method == 'PayPal'%}
-			<script>
-				function getCookie(name) {
-					var cookieValue = null;
-					if (document.cookie && document.cookie !== '') {
-						var cookies = document.cookie.split(';');
-						for (var i = 0; i < cookies.length; i++) {
-							var cookie = jQuery.trim(cookies[i]);
-							// Does this cookie string begin with the name we want?
-							if (cookie.substring(0, name.length + 1) === (name + '=')) {
-								cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-								break;
-							}
-						}
-					}
-					return cookieValue;
-				}
-			  var csrftoken = getCookie('csrftoken');
-			  var grand_total = "{{ grand_total }}";
-			  var url = "{% url 'payment' %}";
-			  var order_number = "{{ order.order_number}}";
-			  var order_complete = "{% url 'orderComplete'%}";
-			  
-			  function initPayPalButton() {
-				paypal.Buttons({
-				  style: {
-					shape: 'rect',
-					color: 'gold',
-					layout: 'vertical',
-					label: 'checkout',
-					
-				  },
-		  
-				  createOrder: function(data, actions) {
-					return actions.order.create({
-					  purchase_units: [{"amount":{"currency_code":"GBP","value": grand_total }}]
-					});
-				  },
-		  
-				  onApprove: function(data, actions) {
-					return actions.order.capture().then(function(orderData) {
-					  
-					  // Full available details
-					  console.log(orderData);
-					  var transaction = orderData.purchase_units[0].payments.captures[0];
-					  var transaction_id = transaction.id;
-					  var status = orderData.status;
-					  var payment_method = 'PayPal';
-					  
-					  sendTransaction(transaction_id, status, payment_method);
-					 
-					 
-		  
-					  // Show a success message within this page, e.g.
-					  const element = document.getElementById('paypal-button-container');
-					  element.innerHTML = '';
-					  element.innerHTML = "<h4><i class='fa fa-spinner fa-spin'></i>Please wait...</h4>";
-		  
-					  // Or go to another URL:  actions.redirect('thank_you.html');
-					  
-					});
-				  },
-		  
-				  onError: function(err) {
-					console.log(err);
-				  }
-				}).render('#paypal-button-container');
-			  }
-			  initPayPalButton();
-			  function sendTransaction(transaction_id, status, payment_method){
-				$.ajax({
-					url : url,
-					type: 'POST',
-					data:{
-						'order_number': order_number,
-						'transaction_id': transaction_id,
-						'status': status,
-						'payment_method': payment_method,
-						'csrfmiddlewaretoken': csrftoken
-					},
-					success: function (response){
-						console.log(response);
-						window.location.href = order_complete + '?order_no=' + response.order_number + '&transaction_id=' + response.transaction_id;		
-					}
-				  })
-			  }
-			  
-			  
-			</script>
-		{% endif %}
+		
+			
 {%endblock%}

@@ -5,6 +5,7 @@ from django.contrib import messages
 from accounts.forms import UserInfoForm, UserProfileForm
 from accounts.models import User, UserProfile
 from order.models import Order, OrderedFood
+from order.utils import getQRCode
 
 @login_required(login_url='login' )
 def customerProfile(request):
@@ -42,9 +43,8 @@ def myOrders(request):
     return render(request, 'customer/my_orders.html', context)
 
 def orderDetails(request, order_number):
-    try:
-        print(order_number)
-        order = Order.objects.find(order_number = order_number, is_ordered=True)
+    # try:
+        order = get_object_or_404(Order, order_number = order_number, is_ordered=True)
         if order:
             orderedFood = OrderedFood.objects.filter(order=order)
     
@@ -58,11 +58,12 @@ def orderDetails(request, order_number):
                 'order' : order,
                 'orderedFood': orderedFood,
                 'subtotal' : subtotal,
-                'tax_data' : tax_data
+                'tax_data' : tax_data,
+                'qr_svg' : getQRCode(request, order.order_number),
             }
-            return render(request, 'order_details.html', context)
+            return render(request, 'customer/order_details.html', context)
         return redirect('customerDashboard')
-    except:
-        return redirect('customerDashboard')
+    # except:
+    #     return redirect('customerDashboard')
     
     

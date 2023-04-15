@@ -10,7 +10,7 @@ from order.forms import OrderForm
 from order.models import Order, OrderedFood, Payment
 import simplejson as json
 import stripe
-from order.utils import generate_order_number, get_order_total_by_vendor
+from order.utils import generate_order_number, get_order_total_by_vendor, getQRCode
 
 @login_required(login_url='login') 
 def placeOrder(request):
@@ -32,6 +32,7 @@ def placeOrder(request):
     subtotal = 0
     tax_dictionary = {}
     total_data={}
+    
     for i in cart_items:
         vendorId = i.foodItem.vendor.id
         if vendorId in k:
@@ -58,6 +59,10 @@ def placeOrder(request):
     grandTotal = dicCart['grand_total']   
     tax_data = dicCart['tax_dictionary']
     
+    cart_items_json={}
+    for it in cart_items:
+        cart_items_json.update({"{}".format(it.foodItem.id) :  "{}".format(it.quantity)})
+    
     if request.method == 'POST':
         form = OrderForm(request.POST)
         
@@ -83,43 +88,40 @@ def placeOrder(request):
             order.order_number = generate_order_number(order.id)
             order.vendors.add(*vendor_ids)
             order.save()
+            
+            #print(cart_items_json)
+            
             context = {
                 'order' : order,
-                'cart_items' : cart_items
+                'cart_items' : cart_items,
+                'cart_items_json' : cart_items_json,
+                'client_secret':''
             }
-            print(order.vendors)
-            print(request.POST['payment_method'])
+            
             if request.POST['payment_method'] == 'Stripe':
-              
-              
                 
-            # Set your secret key. Remember to switch to your live secret key in production.
-            # See your keys here: https://dashboard.stripe.com/apikeys
                 stripe.api_key = settings.STRIPE_SECRET_KEY
                 
-                paymentIntent = stripe.PaymentIntent.create(
-                    amount = int(grandTotal * 100), #converting into pence
-                    currency = "gbp",
-                    automatic_payment_methods = {"enabled" : True},
-                    application_fee_amount = 1,
-                    transfer_data = {"destination": "acct_1MsPmxIIEzOr8uuC"},
-                )
+                payment_intent = stripe.PaymentIntent.create(
+                                    amount=int(order.total * 100),
+                                    currency='gbp',
+                                    automatic_payment_methods={"enabled": True},
+                                    application_fee_amount=123,
+                                    capture_method="manual", #allows to place hold on the payment
+                                    #on_behalf_of='acct_1HYGocIWUKRSbB8m',
+                                    transfer_data = {"destination": cart_items[0].foodItem.vendor.payment_account_key},
+                                    metadata = {'json': json.dumps(cart_items_json), 
+                                                'order_number' : order.order_number,
+                                                'order_total': order.total,
+                                                'user_id' : order.user.id,
+                                                }
+                                    
+                                );    
+                context['client_secret'] = payment_intent.client_secret
+                context['paymentIntent'] = payment_intent.id
+                
+               #print(context)
 
-                kkp =  stripe.checkout.Session.create(
-                    mode="setup",
-                    success_url="https://hungrybuff.co/customer/my-orders/",
-                    cancel_url="https://hungrybuff.co/cart",
-                    setup_intent_data={
-                        "description" : "A description for setup",
-                        "metadata": {
-                            "a" : "b",
-                            "b" : "c"
-                        },
-                        "on_behalf_of": "acct_1MsPmxIIEzOr8uuC"
-                    },
-                    payment_method_types = ["card"]
-                )
-                return redirect(kkp.url)
             return render(request, 'order/placeOrder.html', context)
         else:
             print(form.errors)
@@ -145,7 +147,6 @@ def payment(request):
                 payment_method = payment_method,
                 status = status,
                 amount = order.total
-                
             )
             payment.save()
             
@@ -216,6 +217,7 @@ def payment(request):
                     send_notification_email(mail_subject, mail_template, context)
             
             #CLEAR THE CART
+            #print("clear the cart")
             cart_items.delete()
             
             #Return the status
@@ -228,23 +230,97 @@ def orderComplete(request):
     order_number = request.GET['order_no']
     transaction_id = request.GET['transaction_id']
     
-    try:
-        order = Order.objects.get(order_number=order_number, payment__transaction_id=transaction_id, is_ordered=True)
-        orderedFood = OrderedFood.objects.filter(order=order)
-        
-        subtotal = 0
-        for item in orderedFood:
-            subtotal += (item.price * item.quantity)
-        
-        
-        tax_data = json.loads(order.tax_data)
-        
-        context = {
-                'order' : order,
-                'orderedFood' : orderedFood,
-                'subtotal' : subtotal,
-                'tax_data' : tax_data
-            }
-        return render(request, 'order/orderComplete.html', context)
-    except:
-        return redirect('home')
+    # try:
+    order = Order.objects.get(order_number=order_number, payment__transaction_id=transaction_id, is_ordered=True)
+    orderedFood = OrderedFood.objects.filter(order=order)
+    
+    subtotal = 0
+    for item in orderedFood:
+        subtotal += (item.price * item.quantity)
+    
+    tax_data = json.loads(order.tax_data)
+    
+    context = {
+            'order' : order,
+            'orderedFood' : orderedFood,
+            'subtotal' : subtotal,
+            'tax_data' : tax_data,
+            'qr_svg' : getQRCode(request, order.order_number),
+        }
+    return render(request, 'order/orderComplete.html', context)
+    # except:
+    #     print('exception occured')
+    
+def stripePlaceOrder(request):
+    cart_items = Cart.objects.filter(user=request.user).order_by('created_at')
+    cart_count = cart_items.count()
+    
+    if cart_count <= 0:
+        return redirect('marketplace')
+    
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    payment_intent = stripe.PaymentIntent.create(
+                                amount=1000,
+                                currency='gbp',
+                                automatic_payment_methods={"enabled": True},
+                                application_fee_amount=123,
+                                capture_method="manual", #allows to place hold on the payment
+                                #on_behalf_of='acct_1HYGocIWUKRSbB8m',
+                                transfer_data = {"destination": "acct_1MsPmxIIEzOr8uuC"},
+                            );    
+    context = {
+         'client_secret' : payment_intent.client_secret,
+         'paymentIntent' : payment_intent.id
+     }
+    
+    return render(request, 'order/stripePlaceOrder.html', context)
+
+def updateOrderStatus(request):
+    if request.user.is_authenticated:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            order_number = request.POST['order_number']
+            status = request.POST['newstatus']
+            #reason = request.POST['reason']        
+
+            order = Order.objects.get(order_number=order_number, is_ordered=True)
+            
+            #requested_by_customer, or 
+
+            stripe.api_key = settings.STRIPE_SECRET_KEY
+            paymentIntent = stripe.PaymentIntent.retrieve(order.payment.transaction_id)
+            if paymentIntent and paymentIntent.status == 'requires_capture' and status == 'Accepted':
+                #Capture the payment if accepted
+                paymentIntent = stripe.PaymentIntent.capture(order.payment.transaction_id)
+                if paymentIntent.status == "succeeded":
+                    order.status = status
+                    order.save()
+                    return JsonResponse({'status': 'Success', 'newStatus' : status, 
+                                 'message' : f"Order {str.lower(status)} successfully."}) 
+                else:
+                    return JsonResponse({'status': 'Fail', 
+                                         'newStatus' : 'Payment Error!', 
+                                         'message' : "Order payment could not be processed. Please contact the customer."}) 
+            elif status == 'Rejected' and paymentIntent and paymentIntent.status == 'requires_capture':
+                 paymentIntent = stripe.PaymentIntent.cancel(order.payment.transaction_id, 
+                                                                cancellation_reason='abandoned')
+                 if paymentIntent.status == "canceled":
+                     order.status = status
+                     order.save() 
+                     return JsonResponse({'status': 'Success', 
+                                          'newStatus' : status, 
+                                          'message' : f"Order {str.lower(status)} successfully."})
+            elif status == 'Ready':
+                 order.status = status
+                 order.save() 
+                 return JsonResponse({'status': 'Success', 
+                                          'newStatus' : status, 
+                                          'message' : f"Order is now {str.lower(status)} for collection."})
+            elif status == 'Collected':
+                 order.status = status
+                 order.save() 
+                 return JsonResponse({'status': 'Success', 
+                                          'newStatus' : status, 
+                                          'message' : f"Order {str.lower(status)} successfully."})
+                 
+    return JsonResponse({'status': 'Fail', 'message' : f"Order could not be {str.lower(status)}"}) 
+

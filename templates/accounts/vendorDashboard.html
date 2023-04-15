@@ -80,10 +80,61 @@
                                                             <td>{{order.created_at}}</td>
                                                             <td>{{order.get_total_by_vendor.grand_total | currency}}</td>
                                                             <td>{{order.get_total_by_vendor.total_tax | currency}}</td>
-                                                            <td><a href="{%url 'vendorOrderDetail' order.order_number%}" class="btn btn-success">{{order.status}}</a></td>
+                                                            <td><a role="button" 
+                                                                   class="btn btn-success update-order-status" 
+                                                                   style="color:unset">View</a>
+                                                                <!-- Example split danger button -->
+                                                                <div class="btn-group">
+                                                                    <a href="#" role="button" class="btn btn-primary update-order-status" 
+                                                                            data-order="{{order.order_number}}" 
+                                                                            data-order-status="{{order.status}}" 
+                                                                            data-order-newstatus="Accepted">
+                                                                                            {% if order.status == 'New'%} Accept 
+                                                                                            {%else%} {{order.status}} 
+                                                                                            {%endif%}</a>
+                                                                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" 
+                                                                            data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
+                                                                           
+                                                                    </button>
+                                                                    {% if request.user.get_role == 'Vendor'%}
+                                                                        <ul class="dropdown-menu">
+                                                                            {% if order.status == 'New' %}                                                                                  
+                                                                                <li><a class="dropdown-item update-order-status" 
+                                                                                    data-order="{{order.order_number}}"
+                                                                                    href="#" data-order-status="{{order.status}}" data-order-newstatus="Rejected">Reject</a></li>
+                                                                            {% elif order.status == 'Accepted'%}                                                                                  
+                                                                                <li><a class="dropdown-item update-order-status" role="button"
+                                                                                    data-order="{{order.order_number}}" 
+                                                                                    href="#" data-order-status="{{order.status}}" data-order-newstatus="Ready">Ready to collect</a></li>
+                                                                            {% elif order.status == 'Ready'%}                                                                                  
+                                                                                <li><a class="dropdown-item update-order-status" role="button"
+                                                                                    data-order="{{order.order_number}}" 
+                                                                                    href="#" data-order-status="{{order.status}}" data-order-newstatus="Collected">Collected</a></li>
+                                                                            {%endif%}
+                                                                                <!-- This option is common-->    
+                                                                                <li><a class="dropdown-item update-order-status" 
+                                                                                    href="{%url 'vendorOrderDetail' order.order_number%}">View</a></li>
+                                                                            
+                                                                        </ul>
+                                                                    {%elif request.user.get_role == 'Customer'%}
+                                                                        <ul class="dropdown-menu">
+                                                                            {% if order.status == 'New' %}                                                                                  
+                                                                                <li><a class="dropdown-item update-order-status" 
+                                                                                    data-order="{{order.order_number}}"
+                                                                                    href="#" data-order-status="{{order.status}}" data-order-newstatus="Canceled">Cancel</a></li>
+                                                                            {%endif%}
+                                                                                <!-- This option is common-->    
+                                                                                <li><a class="dropdown-item update-order-status" 
+                                                                                    href="{%url 'vendorOrderDetail' order.order_number%}">View</a></li>
+                                                                            
+                                                                        </ul>
+                                                                    {%endif%}
+                                                                </div>
+                                                            </td>
+                                                            
                                                         </tr>
                                                         {%endfor%}
-                                                        
+                                                        <span id="updateOrderStatus" data-order-status-url="{% url 'updateOrderStatus' %}"></span>
                                                     </tbody>
                                                   </table>
                                             </div>												
@@ -99,4 +150,33 @@
         </div>
     </div>
     <!-- Main Section End -->
+    <!--Reject Modal-->
+    <div class="modal fade" id="OrderRejectModal" tabindex="-1" role="dialog" aria-labelledby="orderRejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="orderRejectModalLabel">Rejecting the order</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form id="rejectForm">
+                <div class="modal-body">
+                
+                    <div class="form-group">
+                    <label for="message-text" class="col-form-label" >Message:</label>
+                    <textarea class="form-control" id="message-text"  
+                                placeholder="Enter the reason for rejecting this order" required></textarea>
+                    <span id="reject-data" data-order="" data-status="" data-newstatus=""></span>        
+                    </div>
+                
+                </div>
+                <div class="modal-footer">
+                <button type="button" id="cancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" id="reject" class="btn btn-danger"><i class="fa fa-ban"></i> Reject</button>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
 {% endblock %}

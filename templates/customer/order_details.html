@@ -70,7 +70,8 @@
                                                             </table>
                                                             <div class="row mt-5">
                                                                 <div class="d-flex justify-content-center col-md-6">
-                                                                    <img src="{%static 'images/paid.png'%}" alt="paid" width="200"/>
+                                                                    {% comment %} <img src="{%static 'images/paid.png'%}" alt="paid" width="200"/> {% endcomment %}
+                                                                    <img src="{{ qr_svg }}" alt="qr_code" width="200"/>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <ul>
