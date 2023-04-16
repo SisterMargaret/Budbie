@@ -98,8 +98,9 @@
 																<!-- We'll put the error messages in this element -->
 																<div id="card-errors" role="alert"></div>
 																
-																<button id="payment-button" 
-																		data-secret="{{ client_secret }}" 
+																<button id="payment-button"
+																		data-stripe-secret = "{{stripe_secret}}" 
+																		data-client-secret="{{ client_secret }}" 
 																		data-payment-url = "{% url 'payment'%}"
 																		data-order-complete-url="{% url 'orderComplete'%}"
 																		data-order-number="{{order.order_number}}"

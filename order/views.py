@@ -95,7 +95,8 @@ def placeOrder(request):
                 'order' : order,
                 'cart_items' : cart_items,
                 'cart_items_json' : cart_items_json,
-                'client_secret':''
+                'client_secret':'',
+                'stripe_secret' : settings.STRIPE_SECRET_KEY
             }
             
             if request.POST['payment_method'] == 'Stripe':

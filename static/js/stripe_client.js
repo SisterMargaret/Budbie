@@ -20,10 +20,10 @@ $(document).ready(function(){
             $("#button-text").removeClass("hidden");
         }
     }
-    var stripe = Stripe('pk_test_51HYGocIWUKRSbB8mstCev6sQn7esnukXh29KUqJbqsQcwtQ9MwGUEyS9N2PlqB2KWAsLnqOeLBlapFtFWeesFPBQ00FkFWyW1t');
+    var stripe = Stripe($("#payment-button").attr('data-stripe-secret'));
     // Set up Stripe.js and Elements to use in checkout form
     const options = {
-        clientSecret: $("#payment-button").attr('data-secret'),
+        clientSecret: $("#payment-button").attr('data-client-secret'),
         // Fully customizable with appearance API.
         appearance: { 
             theme: 'flat',

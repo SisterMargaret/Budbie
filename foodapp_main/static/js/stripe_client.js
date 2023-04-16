@@ -20,7 +20,7 @@ $(document).ready(function(){
             $("#button-text").removeClass("hidden");
         }
     }
-    var stripe = Stripe('pk_test_51HYGocIWUKRSbB8mstCev6sQn7esnukXh29KUqJbqsQcwtQ9MwGUEyS9N2PlqB2KWAsLnqOeLBlapFtFWeesFPBQ00FkFWyW1t');
+    var stripe = Stripe();
     // Set up Stripe.js and Elements to use in checkout form
     const options = {
         clientSecret: $("#payment-button").attr('data-secret'),

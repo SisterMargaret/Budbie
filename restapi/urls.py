@@ -10,5 +10,5 @@ router = routers.DefaultRouter()
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
-    path('api-auth/', views.webhook)
+    path('api-auth/', views.webhook, name="apiAuth")
 ]
