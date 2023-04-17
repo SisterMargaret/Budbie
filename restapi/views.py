@@ -10,6 +10,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 # Create your views here.
 @csrf_exempt
 def webhook(request):
+    print("I am in webhook by stripe :)")
     endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
     event = None
     payload = request.body
