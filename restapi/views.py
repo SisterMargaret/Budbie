@@ -13,9 +13,10 @@ def webhook(request):
     endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
     event = None
     payload = request.body
-    sig_header = request.headers['STRIPE_SIGNATURE']
-
     try:
+        sig_header = request.headers['STRIPE_SIGNATURE']
+
+    
         event = stripe.Webhook.construct_event(
             payload, sig_header, endpoint_secret
         )
