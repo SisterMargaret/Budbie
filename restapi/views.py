@@ -3,12 +3,13 @@ from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseNotAll
 from django.views.decorators.csrf import csrf_exempt
 import stripe
 from foodapp_main import settings
-
+from rest_framework.decorators import api_view
 from order.utils import create_order_and_orderedItems
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 # Create your views here.
 @csrf_exempt
+@api_view(['POST'])
 def webhook(request):
     print("I am in webhook by stripe :)")
     endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
