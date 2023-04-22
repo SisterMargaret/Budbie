@@ -148,7 +148,7 @@ def create_order_and_orderedItems(transaction_id, payment_method, status, metada
         cart_items.delete()
             
 def getQRCode(request, order_number):
-    current_url = get_current_site(request) + request.build_absolute_uri(f'/customer/order-details/{order_number}')
+    current_url = request.build_absolute_uri(f'/customer/order-details/{order_number}')
     factory = SvgImage
     qr_image = qrcode.make(current_url,image_factory=factory, box_size=20)    
     bufstore = io.BytesIO()

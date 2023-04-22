@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 #linode ubuntu instance ip 139.162.250.110
-ALLOWED_HOSTS = ['139.162.250.110', '127.0.0.1', 'hungrybuff.co', 'hungrybuff.co.uk', 'www.hungrybuff.co', 'www.hungrybuff.co.uk']
+ALLOWED_HOSTS = ['139.162.250.110', '127.0.0.1', 'localhost', 'hungrybuff.co', 'hungrybuff.co.uk', 'www.hungrybuff.co', 'www.hungrybuff.co.uk']
 
 
 # Application definition

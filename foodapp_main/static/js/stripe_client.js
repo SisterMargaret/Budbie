@@ -52,13 +52,12 @@ $(document).ready(function(){
     
     paymentElement.mount("#payment-element");
 
-
     var form = document.getElementById('payment-form');
 
     form.addEventListener('submit', function(ev) {
     ev.preventDefault();
     setLoading(true);
-    console.log($("#payment-button").attr('data-cart-items'));
+    
     stripe.confirmPayment({
         elements,
         confirmParams:{

@@ -1,3 +1,4 @@
+from time import sleep
 from django.shortcuts import render, redirect
 from accounts.utils import send_notification_email
 from foodapp_main import settings
@@ -229,7 +230,8 @@ def payment(request):
 def orderComplete(request):
     order_number = request.GET['order_no']
     transaction_id = request.GET['transaction_id']
-    
+    #Too fast for the redirect to get the order
+    sleep(0.1)
     # try:
     order = Order.objects.get(order_number=order_number, payment__transaction_id=transaction_id, is_ordered=True)
     orderedFood = OrderedFood.objects.filter(order=order)
