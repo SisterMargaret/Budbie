@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D # ``D`` is a shortcut for ``Distance``
 from django.contrib.gis.db.models.functions import Distance
+from geopy.geocoders import Nominatim
 
 # Create your views here.
 def marketplace(request):
@@ -154,9 +155,13 @@ def search(request):
         # get vendor ids that
         foodItem_By_Category = FoodItem.objects.filter(food_title__icontains=keyword, is_available=True).values_list('vendor', flat=True)
         
-        if latitude and longitude and radius:
+        if latitude and longitude:
             pnt = GEOSGeometry('POINT(%s %s)' %(longitude, latitude), srid=4326)
-        
+        elif address:
+            locator = Nominatim(user_agent="myGeocoder")
+            location = locator.geocode(address)
+            pnt = GEOSGeometry('POINT(%s %s)' %(location.longitude, location.latitude), srid=4326)
+             
         vendors = Vendor.objects.filter(Q(id__in=foodItem_By_Category) | Q(vendor_name__icontains=keyword), 
                                         is_approved=True, 
                                         user__is_active=True,

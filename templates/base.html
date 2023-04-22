@@ -40,9 +40,8 @@
 	<link rel="stylesheet" href="{% static 'css/apple-pay.css'%}"/>
 	<script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
 	{%endif%}
-
     <!-- Include the PayPal JavaScript SDK -->
-    <script src="https://www.paypal.com/sdk/js?client-id={{PAYPAL_CLIENT_ID}}&currency=GBP"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id={{PAYPAL_CLIENT_ID}}&currency=GBP" async></script>
 
 	<!-- Include  for jQuery and Datatable -->
 	<link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
