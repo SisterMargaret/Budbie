@@ -24,9 +24,9 @@
                                                                     <div class="image-holder"> 
                                                                             <img src="{{item.foodItem.image.url}}" alt="">
                                                                         </div>
-                                                                    <div class="text-holder">
+                                                                    <div class="text-holder" style="width:45%">
                                                                         <h6>{{item.foodItem}}</h6>
-                                                                        <span style="width:100%">{{item.foodItem.description}}</span>
+                                                                        <span>{{item.foodItem.description}}</span>
                                                                         <a href="{% url 'vendorDetail' item.foodItem.vendor.slug %}" 
                                                                             class="badge badge-warning">{{ item.foodItem.vendor }}</a>
                                                                     </div>
