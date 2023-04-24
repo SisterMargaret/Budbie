@@ -16,6 +16,7 @@ def get_cart_counter(request):
     return dict(cart_count= cart_count,)
 
 def get_cart_amount(request):
+    vat_registered = False
     subtotal = 0
     tax = 0
     tax_dictionary = {}
@@ -26,15 +27,19 @@ def get_cart_amount(request):
             foodItem = FoodItem.objects.get(pk=item.foodItem.id)
             subtotal += (foodItem.price * item.quantity)
         
-        tax_to_apply = Tax.objects.filter(is_active = True)
+        if cart_items and cart_items.count() > 0:
+           vat_registered = (cart_items[0].foodItem.vendor.vat_number != None) 
         
-        for i in tax_to_apply:
-            tax_type = i.type
-            tax_percentage = i.percentage
-            tax_amount = round((tax_percentage * subtotal)/100,2)
-            tax_dictionary.update({tax_type : {str(tax_percentage) : tax_amount}})
-        
-        tax = sum(x for key in tax_dictionary.values() for x in key.values() )                
+        if vat_registered:
+            tax_to_apply = Tax.objects.filter(is_active = True)
+            
+            for i in tax_to_apply:
+                tax_type = i.type
+                tax_percentage = i.percentage
+                tax_amount = round((tax_percentage * subtotal)/100,2)
+                tax_dictionary.update({tax_type : {str(tax_percentage) : tax_amount}})
+            
+            tax = sum(x for key in tax_dictionary.values() for x in key.values() )                
 
         grand_total = subtotal + tax
         

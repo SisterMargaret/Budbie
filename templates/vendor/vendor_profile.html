@@ -48,11 +48,6 @@
                                                             <label>Update Logo</label>
                                                             <div class="upload-gallery">
                                                                 {{profileForm.profile_picture}}
-                                                                {% comment %} {% if profileForm.profil_picture %}
-                                                                    <img class="thumbnail" src="{{profileForm.profile_picture.url}}" />
-                                                                {%else%} 
-                                                                    <img class="thumbnail" src="{%static 'images/default-profile.png'%}" width=50 />
-                                                                {%endif%} {% endcomment %}
                                                             </div>
                                                         </div>
                                                         <label class="text-danger">{{profileForm.profile_picture.errors}}</label>
@@ -120,6 +115,12 @@
                                                 </div>
                                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                                     <div class="field-holder">
+                                                        <label>VAT number (If applicable)</label>
+                                                        {{vendorForm.vat_number}}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="field-holder">
                                                         <label>Address</label>
                                                         {{profileForm.address}}
                                                         <small class="text-muted float-right">powered by google</small>
@@ -168,7 +169,6 @@
                                 </div>
                             </form>
                             <!-- My Restaurants Form End -->
-                            
                         </div>
                     </div>
                 </div>

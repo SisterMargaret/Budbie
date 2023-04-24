@@ -83,7 +83,7 @@ def placeOrder(request):
             order.tax_data = json.dumps(tax_data)
             order.total_data = json.dumps(total_data)
             order.total_tax = totalTax
-            order.payment_method = request.POST['payment_method']
+            order.payment_method = 'Stripe'
             
             order.save()
             order.order_number = generate_order_number(order.id)
@@ -100,26 +100,26 @@ def placeOrder(request):
                 'stripe_secret' : settings.STRIPE_PUB_KEY
             }
             
-            if request.POST['payment_method'] == 'Stripe':
+            #Stripe Payment
                 
-                stripe.api_key = settings.STRIPE_SECRET_KEY
-                
-                payment_intent = stripe.PaymentIntent.create(
-                                    amount=int(order.total * 100),
-                                    currency='gbp',
-                                    automatic_payment_methods={"enabled": True},
-                                    capture_method="manual", #allows to place hold on the payment
-                                    #on_behalf_of='acct_1HYGocIWUKRSbB8m',
-                                    transfer_data = {"destination": cart_items[0].foodItem.vendor.payment_account_key},
-                                    metadata = {'json': json.dumps(cart_items_json), 
-                                                'order_number' : order.order_number,
-                                                'order_total': order.total,
-                                                'user_id' : order.user.id,
-                                                }
-                                    
-                                );    
-                context['client_secret'] = payment_intent.client_secret
-                context['paymentIntent'] = payment_intent.id
+            stripe.api_key = settings.STRIPE_SECRET_KEY
+            
+            payment_intent = stripe.PaymentIntent.create(
+                                amount=int(order.total * 100),
+                                currency='gbp',
+                                automatic_payment_methods={"enabled": True},
+                                capture_method="manual", #allows to place hold on the payment
+                                #on_behalf_of='acct_1HYGocIWUKRSbB8m',
+                                transfer_data = {"destination": cart_items[0].foodItem.vendor.payment_account_key},
+                                metadata = {'json': json.dumps(cart_items_json), 
+                                            'order_number' : order.order_number,
+                                            'order_total': order.total,
+                                            'user_id' : order.user.id,
+                                            }
+                                
+                            );    
+            context['client_secret'] = payment_intent.client_secret
+            context['paymentIntent'] = payment_intent.id
                 
                #print(context)
 
@@ -135,7 +135,7 @@ def payment(request):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             order_number = request.POST['order_number']
             transaction_id = request.POST['transaction_id']
-            payment_method = request.POST['payment_method']
+            payment_method = 'Stripe'
             status = request.POST['status']
             
             #UPDATE THE ORDER STATUS
@@ -231,7 +231,7 @@ def orderComplete(request):
     order_number = request.GET['order_no']
     transaction_id = request.GET['transaction_id']
     #Too fast for the redirect to get the order
-    sleep(0.1)
+    sleep(0.3)
     # try:
     order = Order.objects.get(order_number=order_number, payment__transaction_id=transaction_id, is_ordered=True)
     orderedFood = OrderedFood.objects.filter(order=order)

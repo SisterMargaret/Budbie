@@ -12,6 +12,7 @@ class Vendor(models.Model):
     vendor_name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=100, unique=True)
     vendor_license = models.ImageField(upload_to='vendor/license')
+    vat_number=models.CharField(max_length=12, null=True, blank=True)
     is_approved = models.BooleanField(default=False)
     is_payment_account_setup = models.BooleanField(default=False, null=True)
     payment_account_key = models.CharField(max_length=100, blank=True, null=True)
@@ -31,8 +32,6 @@ class Vendor(models.Model):
             if i.is_closed:
                 is_open = False
             else:
-                print (i.from_hour)
-                print(datetime.strptime(i.from_hour, "%I:%M %p"))
                 start = str(datetime.strptime(i.from_hour, "%I:%M %p").time())
                 end = str(datetime.strptime(i.to_hour, "%I:%M %p").time())
                 

@@ -41,18 +41,21 @@ function createRadioElement( name, checked, option, value) {
      return radioInput;}
 
 function initAutoComplete(){
-autocomplete = new google.maps.places.Autocomplete(
-    document.getElementById('id_address'),
-    {
-        types: ['geocode', 'establishment'],
-        //default in this app is "IN" - add your country code
-        componentRestrictions: {'country': ['gb']},
-    })
-// function to specify what should happen when the prediction is clicked
-autocomplete.addListener('place_changed', onPlaceChanged);
+    
+    autocomplete = new google.maps.places.Autocomplete(
+        document.getElementById('id_address'),
+        {
+            types: ['geocode', 'establishment'],
+            //default in this app is "IN" - add your country code
+            componentRestrictions: {'country': ['gb']},
+        });
+   
+        // function to specify what should happen when the prediction is clicked
+    autocomplete.addListener('place_changed', onPlaceChanged);
 }
 
 function onPlaceChanged (){
+    
     var place = autocomplete.getPlace();
 
     // User did not select the prediction. Reset the input field or alert()

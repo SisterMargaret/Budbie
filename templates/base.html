@@ -32,7 +32,7 @@
 	<script src="{% static '/js/custom.js'%}"></script>
 	
 	{%if '/' in request.path or '/profile/' in request.path %}
-	<script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async></script>
 	{%endif%}
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	

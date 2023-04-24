@@ -133,24 +133,8 @@
                                                                 <span id="grandtotal">{{grand_total | currency}}</span>
                                                             </span>
                                                         </li>
-                                                        <h5> SELECT PAYMENT METHOD</h5>
-                                                        <!--Select payment method-->
-                                                        <div class="payment-method">
-                                                            <label>
-                                                                <input type="radio" name="payment_method" value="PayPal">
-                                                                <img src="{% static 'images/PayPal.png'%}" alt="PayPal" width="100"/>
-                                                            </label>&emsp;
-                                                            <label>
-                                                                <input type="radio" name="payment_method" value="Stripe">
-                                                                <img src="{% static 'images/razorpay_logo.png'%}" alt="Stripe" 
-                                                                    width="100"/>
-                                                            </label>
-                                                            {% comment %} <label>
-                                                                <apple-pay-button buttonstyle="black" type="check-out" locale="en-GB"></apple-pay-button>
-                                                            </label> {% endcomment %}
-                                                        </div>
                                                         <span class="text-danger" id="payment-method-error"></span>
-                                                        <button onclick="return payMethodConfirm();" type="submit" 
+                                                        <button  type="submit" 
                                                                 class="btn btn-danger w-100 p-2 mt-2">PLACE ORDER FOR COLLECTION</button>
                                                     </ul>
                                                     </form>

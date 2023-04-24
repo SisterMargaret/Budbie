@@ -13,7 +13,7 @@
       }  
       .activate-btn{
         font: inherit;
-        background-color: #C33332;
+        background-color: #f27422;
         border: none;
         padding: 10px;
         text-transform: uppercase;
@@ -30,7 +30,7 @@
   <table role="presentation" width="100%">
     <tr>
     <td  align="center" style="color: white;">
-     <img alt="Logo" src="https://rathank.com/foodonline/logo/logo.png" width="400px" align="middle">
+     <img alt="Logo" src="{{domain}}/static/logo/hungrybuff_logo.jpg" width="400px" align="middle">
       </td>
   </table>
 
@@ -66,9 +66,9 @@
         {% if foods %}
             {% for food in foods.all %}
             <tr>
-                <td><img src="https://{{domain}}{{food.foodItem.image.url}}" alt="Food Image" width=60/></td>
+                <td><img src="{{domain}}{{food.foodItem.image.url}}" alt="Food Image" width=60/></td>
                 <td><p style="margin:0;">{{food.foodItem}}</p>
-                    <small><a href="https://{{domain}}{% url 'vendorDetail' food.foodItem.vendor.slug %}">{{food.foodItem.vendor.vendor_name}}</a></small>
+                    <small><a href="{{domain}}{% url 'vendorDetail' food.foodItem.vendor.slug %}">{{food.foodItem.vendor.vendor_name}}</a></small>
                 </td>
                 <td>{{food.quantity}}</td>
                 <td>£{{food.price}}</td>
@@ -92,11 +92,11 @@
         <tr>Total : £{{ grand_total}}
     </tbody>
 </table> 
-  <table role="presentation" bgcolor="#C33332" width="100%">
+  <table role="presentation" bgcolor="#f27422" width="100%">
       <tr>
         <td align="center" style="padding: 15px 15px; color: #fff;">
           <p>© {% now "Y" %} HungryBuff, All Rights Reserved.</p>
-          <a href="https://{{domain}}" style="color:#fff;">Visit Website</a>      
+          <a href="{{domain}}" style="color:#fff;">Visit Website</a>      
         </td>
       </tr>
   </table> 

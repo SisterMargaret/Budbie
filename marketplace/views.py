@@ -200,8 +200,6 @@ def checkout(request):
                       'country' : profile.country,
                       }
     
-    print(default_values)
-    
     form = OrderForm(initial=default_values)
     context = {
         'form' : form,

@@ -84,6 +84,7 @@ def registerVendor(request):
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
+            vat_number = form.cleaned_data['vat_number']
             user = User.objects.create_user(first_name=first_name,
                                      last_name=last_name,
                                      username=username,
@@ -94,6 +95,7 @@ def registerVendor(request):
             vendor = vendor_form.save(commit=False)
             vendor.user = user
             vendor.slug = slugify(vendor_form.cleaned_data['vendor_name'])+'-'+str(user.id)
+            vendor.vat_number = vat_number
             user_profile = UserProfile.objects.get(user=user)
             vendor.user_profile = user_profile
             vendor.save()
@@ -158,7 +160,7 @@ def login(request):
 @login_required(login_url='login')
 def logout(request):
     auth.logout(request)
-    messages.info(request, "You have been loggedout")
+    messages.info(request, "You have been logged out")
     return render(request, 'accounts/login.html')
 
 @login_required(login_url='login')
