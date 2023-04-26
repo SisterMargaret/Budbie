@@ -84,4 +84,11 @@ table td, table th{
     .menu-itam-holder .menu-itam-list .price-holder a i {
         margin-left: 3px;
     }
+
+    .main-search .row{
+        margin-right: -53px !important;
+    }
+    header div.logo{
+        margin-left: 120px !important;
+    }
 }

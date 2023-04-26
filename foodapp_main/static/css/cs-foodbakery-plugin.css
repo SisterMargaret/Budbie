@@ -128,7 +128,7 @@
 .delivery-timing ul li ul.delivery-dropdown li > a .opend-time small { position: absolute; left: 4px; top: 0; }
 /* resturant detail menu end */
 .listing-main-search { text-align: center; width: 58.33333333%; margin: 0 auto; }
-.main-search .row { margin-right: -10px; margin-left: -10px; }
+.main-search .row { margin-right: -23px; margin-left: -10px; }
 .main-search [class*="col-lg"], .main-search [class*="col-md"], .main-search [class*="col-sm"], .main-search [class*="col-xs"] { padding: 0 10px; }
 .main-search .field-holder { position: relative; margin: 0 0 20px; }
 .main-search .field-holder li { list-style: none; }
