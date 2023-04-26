@@ -60,9 +60,7 @@ $(document).ready(function(){
     
     stripe.confirmPayment({
         elements,
-        confirmParams:{
-            return_url: getOrderCompleteUrl(),
-        },
+       
     }).then(function(result) {
                 if (result.error) {
                 // Show error to your customer (for example, insufficient funds)
@@ -76,22 +74,28 @@ $(document).ready(function(){
                     // execution. Set up a webhook or plugin to listen for the
                     // payment_intent.succeeded event that handles any business critical
                     // post-payment actions.
-                   
+                    
 
                     $.ajax({
-                        url : $("#payment-button").attr('data-payment-url'),
+                        url : $("#payment-button").attr('data-order-status-url'),
                         type: 'POST',
                         data:{
                             'order_number': $("#payment-button").attr('data-order-number'),
                             'transaction_id': result.paymentIntent.id,
-                            'status': result.paymentIntent.id,
-                            'payment_method': payment_method,
                             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").value()
                         },
                         success: function (response){
                             console.log(response);
-                            window.location.href = order_complete + '?order_no=' + response.order_number + '&transaction_id=' + response.transaction_id;		
+                            if (response.status != 'New')
+                                setTimeout(()=> {window.location.href = order_complete + '?order_no=' + response.order_number + '&transaction_id=' + response.transaction_id;}, 2000); 
+                            window.location.href = order_complete + '?order_no=' + response.order_number + '&transaction_id=' + response.transaction_id;		                                
+
+                        },
+                        error: function(response){
+                            console.log("in error");
+                            console.log(response);
                         }
+
                       })
                 }
             }

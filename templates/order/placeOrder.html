@@ -102,6 +102,7 @@
 																		data-stripe-secret = "{{stripe_secret}}" 
 																		data-client-secret="{{ client_secret }}" 
 																		data-payment-url = "{% url 'payment'%}"
+																		data-order-status-url = "{% url 'orderStatus'%}"
 																		data-order-complete-url="{% url 'orderComplete'%}"
 																		data-order-number="{{order.order_number}}"
 																		data-transaction-id="{{paymentIntent}}"
@@ -171,7 +172,6 @@
 					return actions.order.capture().then(function(orderData) {
 					  
 					  // Full available details
-					  console.log(orderData);
 					  var transaction = orderData.purchase_units[0].payments.captures[0];
 					  var transaction_id = transaction.id;
 					  var status = orderData.status;

@@ -227,6 +227,20 @@ def payment(request):
                          'order_number' : order_number,
                          'transaction_id' : transaction_id})
 
+def getOrder(request):
+    
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        order_number = request.POST['order_number']
+        transaction_id = request.POST['transaction_id'] 
+        orders = Order.objects.filter(order_number=order_number, payment__transaction_id=transaction_id, is_ordered=True)
+        print(orders.count())
+        if orders.count() == 0:
+            return JsonResponse({"status" : "Failed", 
+                                        'order_number' : order_number,
+                                        'transaction_id' : transaction_id})
+        return JsonResponse( {"status" : orders.first().status}, status=200)
+    return JsonResponse(status=400)
+
 def orderComplete(request):
     order_number = request.GET['order_no']
     transaction_id = request.GET['transaction_id']

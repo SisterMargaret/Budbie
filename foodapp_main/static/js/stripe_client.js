@@ -60,9 +60,10 @@ $(document).ready(function(){
     
     stripe.confirmPayment({
         elements,
-        confirmParams:{
-            return_url: getOrderCompleteUrl(),
-        },
+        redirect: 'if_required'
+        // confirmParams:{
+        //     //return_url: getOrderCompleteUrl(),
+        // },
     }).then(function(result) {
                 if (result.error) {
                 // Show error to your customer (for example, insufficient funds)
@@ -70,27 +71,28 @@ $(document).ready(function(){
                 setLoading(false);
                 } else {
                 // The payment has been processed!
-                if (result.paymentIntent.status === 'succeeded') {
+                if (result.paymentIntent.status === 'requires_capture') {
                     // Show a success message to your customer
                     // There's a risk of the customer closing the window before callback
                     // execution. Set up a webhook or plugin to listen for the
                     // payment_intent.succeeded event that handles any business critical
                     // post-payment actions.
-                   
-
                     $.ajax({
-                        url : $("#payment-button").attr('data-payment-url'),
+                        url : $("#payment-button").attr('data-order-status-url'),
                         type: 'POST',
                         data:{
                             'order_number': $("#payment-button").attr('data-order-number'),
                             'transaction_id': result.paymentIntent.id,
-                            'status': result.paymentIntent.id,
-                            'payment_method': payment_method,
-                            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").value()
+                            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
                         },
                         success: function (response){
+                            if (response.status != 'New')
+                                setTimeout(()=> {window.location.href = getOrderCompleteUrl();}, 2000); 
+                            window.location.href = getOrderCompleteUrl();		                                
+
+                        },
+                        error: function(response){
                             console.log(response);
-                            window.location.href = order_complete + '?order_no=' + response.order_number + '&transaction_id=' + response.transaction_id;		
                         }
                       })
                 }
