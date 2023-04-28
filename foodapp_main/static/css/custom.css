@@ -86,9 +86,9 @@ table td, table th{
     }
 
     .main-search .row{
-        margin-right: -53px !important;
+        margin-right: -52px !important;
     }
-    header logo{
+    header .logo{
         margin-left: 120px !important;
     }
 }

@@ -65,7 +65,7 @@
                                             <div class="responsive-table">
                                                 <table class="table table-hover" id="ordersTable">
                                                     <thead>
-                                                      <tr>
+                                                      <tr role="row">
                                                         <th scope="col">Order Number</th>
                                                         <th scope="col">Date</th>
                                                         <th scope="col">Total</th>
@@ -75,13 +75,14 @@
                                                     </thead>
                                                     <tbody>
                                                         {% for order in orders %} 
-                                                        <tr>
+                                                        <tr role="row">
                                                             <td >{{order.order_number}}</th>
                                                             <td>{{order.created_at}}</td>
                                                             <td>{{order.get_total_by_vendor.grand_total | currency}}</td>
                                                             <td>{{order.get_total_by_vendor.total_tax | currency}}</td>
                                                             <td><a role="button" 
-                                                                   class="btn btn-success update-order-status" 
+                                                                   class="btn btn-success view-order"
+                                                                   href="{%url 'vendorOrderDetail' order.order_number%}"
                                                                    style="color:unset">View</a>
                                                                 <!-- Example split danger button -->
                                                                 <div class="btn-group">
@@ -112,7 +113,7 @@
                                                                                     href="#" data-order-status="{{order.status}}" data-order-newstatus="Collected">Collected</a></li>
                                                                             {%endif%}
                                                                                 <!-- This option is common-->    
-                                                                                <li><a class="dropdown-item update-order-status" 
+                                                                                <li><a class="dropdown-item" 
                                                                                     href="{%url 'vendorOrderDetail' order.order_number%}">View</a></li>
                                                                             
                                                                         </ul>
@@ -124,7 +125,7 @@
                                                                                     href="#" data-order-status="{{order.status}}" data-order-newstatus="Canceled">Cancel</a></li>
                                                                             {%endif%}
                                                                                 <!-- This option is common-->    
-                                                                                <li><a class="dropdown-item update-order-status" 
+                                                                                <li><a class="dropdown-item" 
                                                                                     href="{%url 'vendorOrderDetail' order.order_number%}">View</a></li>
                                                                             
                                                                         </ul>
