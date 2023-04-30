@@ -56,10 +56,10 @@ def registerUser(request):
             user.save()
             
             #Send verification email
-            send_verification_email(request, user)
+            send_verification_email(request, user, 'Please activate your account','accounts/emails/account_verification_email.html')
             
             messages.success(request, 'Your user account has been successful')
-            print('User Created')
+        
             return redirect('registerUser')
         else:
             print(form.errors)
